@@ -27,7 +27,7 @@ namespace Pinger
             while (true)
             {
                 
-                var status = PingHost2(Brizzy, timeout, buffer);
+                var status = PingHost(Brizzy, timeout, buffer);
                 totalPings++;
 
                 if (status.Success)
@@ -42,7 +42,7 @@ namespace Pinger
                 if (status.Success)
                 {
                     totalTime += status.PingTime;
-                    avgTime = Math.Round((decimal)totalTime / (decimal)successfulPings, 1);
+                    avgTime = Math.Round(totalTime / (decimal)successfulPings, 1);
 
                     if (status.PingTime > longest)
                     {
@@ -57,7 +57,7 @@ namespace Pinger
 
                 successRate = Math.Round(((decimal)successfulPings / (decimal)totalPings) * (decimal)100, 1);
 
-                if (status.Success == false)
+                if (!status.Success)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                 }
@@ -66,6 +66,7 @@ namespace Pinger
                 {
                     Console.ForegroundColor = ConsoleColor.White;
                 }
+
                 Console.WriteLine($"{successRate}% R{status.PingTime}. T{totalPings} P{successfulPings} F{failedPings}. A{avgTime} S{shortest} L{longest}");
 
                 Console.ForegroundColor = usual;
@@ -73,7 +74,7 @@ namespace Pinger
             }
         }        
 
-        static PingStats PingHost2(string nameOrAddress, int timeout, byte[] buffer)
+        static PingStats PingHost(string nameOrAddress, int timeout, byte[] buffer)
         {
             Ping? pinger = null;
             var ps = new PingStats();
@@ -87,7 +88,7 @@ namespace Pinger
             }
             catch (PingException)
             {
-                // Discard PingExceptions and return false;
+                // Don't care what type of failure it is
             }
             finally
             {
@@ -98,7 +99,6 @@ namespace Pinger
             }
 
             return ps;
-        }
-        //All our lives we sweat and save.
+        }        
     }
 }
