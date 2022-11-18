@@ -1,4 +1,5 @@
-﻿using System.Net.NetworkInformation;
+﻿using System.Diagnostics;
+using System.Net.NetworkInformation;
 using System.Text;
 
 namespace Pinger
@@ -16,18 +17,20 @@ namespace Pinger
             long failedPings = 0;
             decimal avgTime = 0;
             long totalTime = 0;
-            
+
 
             const string Data = "All our lives we sweat and save.";
             var buffer = Encoding.ASCII.GetBytes(Data);
             const int Timeout = 10000;
-            const int SnoozeTime = 3000;
+            const int SnoozeTime = 5000;
             const string RemoteServer = "8.8.8.8";
 
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"Host: {RemoteServer}, Timeout: {Timeout}, Packet Size: {buffer.Length}, Snooze Time: {SnoozeTime}");
             Console.ForegroundColor = usual;
 
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             while (true)
             {
 
@@ -71,7 +74,14 @@ namespace Pinger
                     Console.ForegroundColor = ConsoleColor.White;
                 }
 
-                Console.WriteLine($"{successRate}% R{status.PingTime}. T{totalPings} P{successfulPings} F{failedPings}. A{avgTime} S{shortest} L{longest}");
+                var t = TimeSpan.FromSeconds(sw.ElapsedMilliseconds / 1000);
+                var hours = t.Hours;
+                var minutes = t.Minutes;
+                var seconds = t.Seconds;
+
+                var elapsed = $"{hours:00}:{minutes:00}:{seconds:00}";
+
+                Console.WriteLine($"{successRate}% R{status.PingTime}. T{totalPings} P{successfulPings} F{failedPings}. A{avgTime} S{shortest} L{longest} U{elapsed}");
 
                 Console.ForegroundColor = usual;
                 Thread.Sleep(SnoozeTime);
