@@ -74,6 +74,7 @@ namespace Pinger
                     Console.ForegroundColor = ConsoleColor.White;
                 }
 
+                // ReSharper disable once PossibleLossOfFraction
                 var t = TimeSpan.FromSeconds(sw.ElapsedMilliseconds / 1000);
                 var hours = t.Hours;
                 var minutes = t.Minutes;
@@ -86,6 +87,7 @@ namespace Pinger
                 Console.ForegroundColor = usual;
                 Thread.Sleep(SnoozeTime);
             }
+            // ReSharper disable once FunctionNeverReturns
         }
 
         internal static PingStats PingHost(string nameOrAddress, int timeout, byte[] buffer)
