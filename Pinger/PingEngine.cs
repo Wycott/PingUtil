@@ -29,7 +29,7 @@ namespace Pinger
             Console.WriteLine($"Host: {RemoteServer}, Timeout: {Timeout}, Packet Size: {buffer.Length}, Snooze Time: {SnoozeTime}");
             Console.ForegroundColor = usual;
 
-            Stopwatch sw = new Stopwatch();
+            var sw = new Stopwatch();
             sw.Start();
             while (true)
             {
