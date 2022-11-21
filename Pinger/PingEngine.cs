@@ -26,8 +26,9 @@ internal static class PingEngine
 
         var buffer = Encoding.ASCII.GetBytes(Data);
 
-        DisplaySettings(RemoteServer, Timeout, buffer, SnoozeTime, usual);
         var stopAfterThisManyPings = CalculateWorkDayPings(SnoozeTime);
+
+        DisplaySettings(RemoteServer, Timeout, buffer, SnoozeTime, usual, stopAfterThisManyPings);
 
         var sw = Stopwatch.StartNew();
 
@@ -124,11 +125,11 @@ internal static class PingEngine
         }
     }
 
-    private static void DisplaySettings(string remoteServer, int timeout, byte[] buffer, int snoozeTime, ConsoleColor usual)
+    private static void DisplaySettings(string remoteServer, int timeout, byte[] buffer, int snoozeTime, ConsoleColor usual, long stopAfterThisManyPings)
     {
         Console.ForegroundColor = ConsoleColor.Yellow;
         Console.WriteLine(
-            $"Host: {remoteServer}, Timeout: {timeout}, Packet Size: {buffer.Length}, Snooze Time: {snoozeTime}");
+            $"Host: {remoteServer}, Timeout: {timeout}, Packet Size: {buffer.Length}, Snooze Time: {snoozeTime}, Data Points: {stopAfterThisManyPings}");
         Console.ForegroundColor = usual;
     }
 
