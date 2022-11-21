@@ -53,7 +53,6 @@ internal static class PingEngine
         var pingsInADay = (WorkingHours * 60 * 60) / snoozeTimeInSeconds;
 
         return pingsInADay;
-
     }
 
     private static void DisplayStatistics(decimal successRate, PingStats status, long totalPings, long successfulPings,
@@ -66,8 +65,7 @@ internal static class PingEngine
 
     private static string CalculateElapsedTime(Stopwatch sw)
     {
-        // ReSharper disable once PossibleLossOfFraction
-        var t = TimeSpan.FromSeconds(sw.ElapsedMilliseconds / 1000);
+        var t = TimeSpan.FromSeconds(sw.ElapsedMilliseconds / 1000f);
         var hours = t.Hours;
         var minutes = t.Minutes;
         var seconds = t.Seconds;
