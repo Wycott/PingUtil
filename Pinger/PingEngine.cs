@@ -27,28 +27,39 @@ internal static class PingEngine
         var buffer = Encoding.ASCII.GetBytes(Data);
 
         DisplaySettings(RemoteServer, Timeout, buffer, SnoozeTime, usual);
+        var stopAfterThisManyPings = CalculateWorkDayPings(SnoozeTime);
 
-        var sw = new Stopwatch();
-        sw.Start();
+        var sw = Stopwatch.StartNew();
 
-        while (true)
+        while (totalPings < stopAfterThisManyPings)
         {
             var status = PingHost(RemoteServer, Timeout, buffer);
             var successRate = UpdatePingStats(status, ref totalPings, ref successfulPings, ref failedPings, ref totalTime, ref avgTime, ref longest, ref shortest);
             SetDisplayColour(status, avgTime);
             var elapsed = CalculateElapsedTime(sw);
-            DisplayStatistics(successRate, status, totalPings, successfulPings, failedPings, avgTime, shortest, longest, elapsed, usual);
+            DisplayStatistics(successRate, status, totalPings, successfulPings, failedPings, avgTime, shortest, longest, elapsed, stopAfterThisManyPings - totalPings, usual);
 
             Thread.Sleep(SnoozeTime);
         }
-        // ReSharper disable once FunctionNeverReturns
+    }
+
+    private static long CalculateWorkDayPings(int snoozeTime)
+    {
+        const int WorkingHours = 16;
+
+        var snoozeTimeInSeconds = snoozeTime / 1000;
+
+        var pingsInADay = (WorkingHours * 60 * 60) / snoozeTimeInSeconds;
+
+        return pingsInADay;
+
     }
 
     private static void DisplayStatistics(decimal successRate, PingStats status, long totalPings, long successfulPings,
-        long failedPings, decimal avgTime, long shortest, long longest, string elapsed, ConsoleColor usual)
+        long failedPings, decimal avgTime, long shortest, long longest, string elapsed, long remainingPings, ConsoleColor usual)
     {
         Console.WriteLine(
-            $"{successRate}% R{status.PingTime}. T{totalPings} P{successfulPings} F{failedPings}. A{avgTime} S{shortest} L{longest} U{elapsed}");
+            $"{successRate}% R{status.PingTime}. T{totalPings} P{successfulPings} F{failedPings}. A{avgTime} S{shortest} L{longest} U{elapsed} C{remainingPings}");
         Console.ForegroundColor = usual;
     }
 
