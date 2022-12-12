@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Text;
+using static System.Console;
 
 namespace Pinger;
 
@@ -13,7 +14,7 @@ internal static class PingEngine
         const int SnoozeTime = 5000;
         const int Timeout = 10000;
 
-        var usual = Console.ForegroundColor;
+        var usual = ForegroundColor;
         var shortest = long.MaxValue;
         var longest = long.MinValue;
 
@@ -50,7 +51,7 @@ internal static class PingEngine
 
         var snoozeTimeInSeconds = snoozeTime / 1000;
 
-        var pingsInADay = (WorkingHours * 60 * 60) / snoozeTimeInSeconds;
+        var pingsInADay = WorkingHours * 60 * 60 / snoozeTimeInSeconds;
 
         return pingsInADay;
     }
@@ -58,9 +59,9 @@ internal static class PingEngine
     private static void DisplayStatistics(decimal successRate, PingStats status, long totalPings, long successfulPings,
         long failedPings, decimal avgTime, long shortest, long longest, string elapsed, long remainingPings, ConsoleColor usual)
     {
-        Console.WriteLine(
+        WriteLine(
             $"{successRate}% R{status.PingTime}. T{totalPings} P{successfulPings} F{failedPings}. A{avgTime} S{shortest} L{longest} U{elapsed} C{remainingPings}");
-        Console.ForegroundColor = usual;
+        ForegroundColor = usual;
     }
 
     private static string CalculateElapsedTime(Stopwatch sw)
@@ -114,21 +115,21 @@ internal static class PingEngine
     {
         if (!status.Success)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
+            ForegroundColor = ConsoleColor.Red;
         }
 
         if (status.PingTime > avgTime)
         {
-            Console.ForegroundColor = ConsoleColor.White;
+            ForegroundColor = ConsoleColor.White;
         }
     }
 
     private static void DisplaySettings(string remoteServer, int timeout, byte[] buffer, int snoozeTime, ConsoleColor usual, long stopAfterThisManyPings)
     {
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine(
+        ForegroundColor = ConsoleColor.Yellow;
+        WriteLine(
             $"Host: {remoteServer}, Timeout: {timeout}, Packet Size: {buffer.Length}, Snooze Time: {snoozeTime}, Data Points: {stopAfterThisManyPings}");
-        Console.ForegroundColor = usual;
+        ForegroundColor = usual;
     }
 
     private static PingStats PingHost(string nameOrAddress, int timeout, byte[] buffer)
@@ -138,13 +139,13 @@ internal static class PingEngine
         try
         {
             var reply = pinger.Send(nameOrAddress, timeout, buffer);
-            var ps = new PingStats
+            var pingStats = new PingStats
             {
                 Success = reply.Status == IPStatus.Success,
                 PingTime = reply.RoundtripTime
             };
 
-            return ps;
+            return pingStats;
         }
         catch (PingException)
         {
