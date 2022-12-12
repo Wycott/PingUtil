@@ -1,10 +1,9 @@
-﻿namespace Pinger
+﻿namespace Pinger;
+
+public static class Program
 {
-    public static class Program
+    private static void Main()
     {
-        private static void Main()
-        {
-            PingEngine.Start();
-        }
+        PingEngine.Start();
     }
 }
