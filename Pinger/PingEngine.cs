@@ -38,6 +38,7 @@ internal static class PingEngine
             var status = PingHost(RemoteServer, Timeout, buffer);
             var successRate = UpdatePingStats(status, ref totalPings, ref successfulPings, ref failedPings, ref totalTime, ref avgTime, ref longest, ref shortest);
             SetDisplayColour(status, avgTime);
+            AudioCue(status);
             var elapsed = CalculateElapsedTime(sw);
             DisplayStatistics(successRate, status, totalPings, successfulPings, failedPings, avgTime, shortest, longest, elapsed, stopAfterThisManyPings - totalPings, usual);
 
@@ -123,6 +124,14 @@ internal static class PingEngine
             ForegroundColor = ConsoleColor.White;
         }
     }
+
+    private static void AudioCue(PingStats status)
+    {
+	    if (!status.Success)
+	    {
+		    Beep();
+	    }
+	}
 
     private static void DisplaySettings(string remoteServer, int timeout, byte[] buffer, int snoozeTime, ConsoleColor usual, long stopAfterThisManyPings)
     {
