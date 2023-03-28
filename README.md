@@ -7,4 +7,8 @@
 
 A ping utility app to replace the batch file I've been using for ever!
 
-_Last updated: 28 June 2022_
+# Features
+
+If an audio device is connected, failed pings produce a console beep.
+
+_Last updated: 28 March 2023_
