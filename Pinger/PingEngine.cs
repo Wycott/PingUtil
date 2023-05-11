@@ -24,6 +24,7 @@ internal static class PingEngine
         long failedPings = 0;
         long totalPings = 0;
         long totalTime = 0;
+        long failedPingsInCluster = 0;
 
         var buffer = Encoding.ASCII.GetBytes(Data);
 
@@ -38,7 +39,7 @@ internal static class PingEngine
             var status = PingHost(RemoteServer, Timeout, buffer);
             var successRate = UpdatePingStats(status, ref totalPings, ref successfulPings, ref failedPings, ref totalTime, ref avgTime, ref longest, ref shortest);
             SetDisplayColour(status, avgTime);
-            AudioCue(status);
+            failedPingsInCluster = AudioCue(status, failedPingsInCluster);
             var elapsed = CalculateElapsedTime(sw);
             DisplayStatistics(successRate, status, totalPings, successfulPings, failedPings, avgTime, shortest, longest, elapsed, stopAfterThisManyPings - totalPings, usual);
 
@@ -125,13 +126,24 @@ internal static class PingEngine
         }
     }
 
-    private static void AudioCue(PingStats status)
+    private static long AudioCue(PingStats status, long failedPingsInCluster)
     {
-	    if (!status.Success)
+	    const int BeepAfter = 3;
+
+	    if (status.Success)
+	    {
+		    return 0;
+	    }
+
+	    failedPingsInCluster++;
+
+	    if (failedPingsInCluster >= BeepAfter)
 	    {
 		    Beep();
 	    }
-	}
+
+	    return failedPingsInCluster;
+    }
 
     private static void DisplaySettings(string remoteServer, int timeout, byte[] buffer, int snoozeTime, ConsoleColor usual, long stopAfterThisManyPings)
     {
