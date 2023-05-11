@@ -9,6 +9,6 @@ A ping utility app to replace the batch file I've been using for ever!
 
 # Features
 
-If an audio device is connected, failed pings produce a console beep.
+If an audio device is connected, failed pings will produce a console beep after a given number of failures.
 
-_Last updated: 28 March 2023_
+_Last updated: 11 May 2023_
