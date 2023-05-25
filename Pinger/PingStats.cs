@@ -1,7 +1,7 @@
 ﻿namespace Pinger;
 
-internal class PingStats
+public class PingStats
 {
-    internal bool Success { get; set; }
-    internal long PingTime { get; set; }
+    public bool Success { get; set; }
+    public long PingTime { get; set; }
 }

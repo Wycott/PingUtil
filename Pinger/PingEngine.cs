@@ -5,9 +5,9 @@ using static System.Console;
 
 namespace Pinger;
 
-internal static class PingEngine
+public static class PingEngine
 {
-    internal static void Start()
+    public static void Start()
     {
         const string Data = "All our lives we sweat and save.";
         const string RemoteServer = "8.8.8.8";
