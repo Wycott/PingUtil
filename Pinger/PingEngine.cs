@@ -128,21 +128,21 @@ public static class PingEngine
 
     private static long AudioCue(PingStats status, long failedPingsInCluster)
     {
-	    const int BeepAfter = 3;
+        const int BeepAfter = 3;
 
-	    if (status.Success)
-	    {
-		    return 0;
-	    }
+        if (status.Success)
+        {
+            return 0;
+        }
 
-	    failedPingsInCluster++;
+        failedPingsInCluster++;
 
-	    if (failedPingsInCluster >= BeepAfter)
-	    {
-		    Beep();
-	    }
+        if (failedPingsInCluster >= BeepAfter)
+        {
+            Beep();
+        }
 
-	    return failedPingsInCluster;
+        return failedPingsInCluster;
     }
 
     private static void DisplaySettings(string remoteServer, int timeout, byte[] buffer, int snoozeTime, ConsoleColor usual, long stopAfterThisManyPings)

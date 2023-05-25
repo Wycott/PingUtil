@@ -14,6 +14,7 @@ namespace Pinger.Test
 
             // Assert
             Assert.Equal(ExpectedPingTime, ps.PingTime);
+            Assert.Equal(ExpectedPingTime, ps.PingTime);
             Assert.Equal(ExpectedSuccessFlag, ps.Success);
         }
     }
