@@ -9,10 +9,10 @@ public static class PingEngine
 {
     public static void Start()
     {
-        const string Data = "All our lives we sweat and save.";
-        const string RemoteServer = "8.8.8.8";
-        const int SnoozeTime = 5000;
-        const int Timeout = 10000;
+        const string data = "All our lives we sweat and save.";
+        const string remoteServer = "8.8.8.8";
+        const int snoozeTime = 5000;
+        const int timeout = 10000;
 
         var usual = ForegroundColor;
         var shortest = long.MaxValue;
@@ -26,43 +26,43 @@ public static class PingEngine
         long totalTime = 0;
         long failedPingsInCluster = 0;
 
-        var buffer = Encoding.ASCII.GetBytes(Data);
+        var buffer = Encoding.ASCII.GetBytes(data);
 
-        var stopAfterThisManyPings = CalculateWorkDayPings(SnoozeTime);
+        var stopAfterThisManyPings = CalculateWorkDayPings(snoozeTime);
 
-        DisplaySettings(RemoteServer, Timeout, buffer, SnoozeTime, usual, stopAfterThisManyPings);
+        DisplaySettings(remoteServer, timeout, buffer, snoozeTime, usual, stopAfterThisManyPings);
 
         var sw = Stopwatch.StartNew();
 
         while (totalPings < stopAfterThisManyPings)
         {
-            var status = PingHost(RemoteServer, Timeout, buffer);
+            var status = PingHost(remoteServer, timeout, buffer);
             var successRate = UpdatePingStats(status, ref totalPings, ref successfulPings, ref failedPings, ref totalTime, ref avgTime, ref longest, ref shortest);
             SetDisplayColour(status, avgTime);
             failedPingsInCluster = AudioCue(status, failedPingsInCluster);
             var elapsed = CalculateElapsedTime(sw);
             DisplayStatistics(successRate, status, totalPings, successfulPings, failedPings, avgTime, shortest, longest, elapsed, stopAfterThisManyPings - totalPings, usual);
 
-            Thread.Sleep(SnoozeTime);
+            Thread.Sleep(snoozeTime);
         }
     }
 
     private static long CalculateWorkDayPings(int snoozeTime)
     {
-        const int WorkingHours = 16;
+        const int workingHours = 16;
 
         var snoozeTimeInSeconds = snoozeTime / 1000;
 
-        var pingsInADay = WorkingHours * 60 * 60 / snoozeTimeInSeconds;
+        var pingsInADay = workingHours * 60 * 60 / snoozeTimeInSeconds;
 
         return pingsInADay;
     }
 
     private static void DisplayStatistics(decimal successRate, PingStats status, long totalPings, long successfulPings,
-        long failedPings, decimal avgTime, long shortest, long longest, string elapsed, long remainingPings, ConsoleColor usual)
+        long failedPings, decimal averageTime, long shortest, long longest, string elapsed, long remainingPings, ConsoleColor usual)
     {
         WriteLine(
-            $"{successRate}% R{status.PingTime}. T{totalPings} P{successfulPings} F{failedPings}. A{avgTime} S{shortest} L{longest} U{elapsed} C{remainingPings}");
+            $"{successRate}% R{status.PingTime}. T{totalPings} P{successfulPings} F{failedPings}. A{averageTime} S{shortest} L{longest} U{elapsed} C{remainingPings}");
         ForegroundColor = usual;
     }
 
@@ -128,7 +128,7 @@ public static class PingEngine
 
     private static long AudioCue(PingStats status, long failedPingsInCluster)
     {
-        const int BeepAfter = 3;
+        const int beepAfter = 3;
 
         if (status.Success)
         {
@@ -137,7 +137,7 @@ public static class PingEngine
 
         failedPingsInCluster++;
 
-        if (failedPingsInCluster >= BeepAfter)
+        if (failedPingsInCluster >= beepAfter)
         {
             Beep();
         }
