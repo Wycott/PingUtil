@@ -1,3 +1,5 @@
+using FluentAssertions;
+
 namespace Pinger.Test
 {
     public class PingStatsTest
@@ -13,8 +15,8 @@ namespace Pinger.Test
             var ps = new PingStats { PingTime = expectedPingTime, Success = expectedSuccessFlag };
 
             // Assert
-            Assert.Equal(expectedPingTime, ps.PingTime);
-            Assert.Equal(expectedSuccessFlag, ps.Success);
+            ps.PingTime.Should().Be(expectedPingTime);
+            ps.Success.Should().Be(expectedSuccessFlag);
         }
     }
 }
