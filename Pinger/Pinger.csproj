@@ -9,6 +9,11 @@
 
   <ItemGroup>
     <PackageReference Include="fluentassertions" Version="6.11.0" />
+    <PackageReference Include="SimpleInjector" Version="5.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Pinger.Interfaces\Pinger.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

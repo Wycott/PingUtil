@@ -1,9 +1,27 @@
-﻿namespace Pinger;
+﻿using System.Diagnostics.CodeAnalysis;
+using Pinger.Interfaces;
+using SimpleInjector;
+
+namespace Pinger;
 
 public static class Program
 {
-    private static void Main()
+    private static Container? Container { get; set; }
+
+    [ExcludeFromCodeCoverage]
+    public static void Main()
     {
-        PingEngine.Start();
+        Container = new Container();
+
+        Container.Register<IPingEngine, PingEngine>();
+        Container.Verify();
+
+        var engine = Container.GetInstance<IPingEngine>();
+        StartWork(engine);
+    }
+
+    public static void StartWork(IPingEngine engine)
+    {
+        engine.Start();
     }
 }
