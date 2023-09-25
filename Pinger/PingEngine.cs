@@ -1,13 +1,14 @@
 ﻿using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Text;
+using Pinger.Interfaces;
 using static System.Console;
 
 namespace Pinger;
 
-public static class PingEngine
+public class PingEngine : IPingEngine
 {
-    public static void Start()
+    public void Start()
     {
         const string data = "All our lives we sweat and save.";
         const string remoteServer = "8.8.8.8";
