@@ -50,7 +50,7 @@ public class ConsoleHandlerTest
         IConsoleHandler consoleHandler = new ConsoleHandler();
 
         // Act
-        consoleHandler.AudioCue(new PingStats() {Success = true}, 0);
+        consoleHandler.AudioCue(new PingStats() { Success = true }, 0);
 
         // Assert
         consoleHandler.Should().NotBeNull();
