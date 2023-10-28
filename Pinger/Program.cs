@@ -6,6 +6,7 @@ namespace Pinger;
 
 public static class Program
 {
+    [ExcludeFromCodeCoverage]
     private static Container? Container { get; set; }
 
     [ExcludeFromCodeCoverage]
