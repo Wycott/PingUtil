@@ -10,7 +10,7 @@ public class ProgramTest
     {
         // Arrange
         var engine = new Mock<IPingEngine>();
-            
+
         // Act/Assert
         Program.StartWork(engine.Object);
     }
