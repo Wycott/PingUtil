@@ -95,7 +95,7 @@ public class PingEngine : IPingEngine
     {
         if (!PingConfig.PingerIsActive)
         {
-            return new PingStats();
+            return new PingStats() { Success = true };
         }
 
         var pinger = new Ping();

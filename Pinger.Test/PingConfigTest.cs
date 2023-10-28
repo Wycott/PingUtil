@@ -11,10 +11,10 @@ public class PingConfigTest
         const string expectedData = "When all else fails";
         const string expectedRemoteServer = "127.0.0.1";
         const int expectedSnoozeTime = 3000;
-        const int expectedTimeout = 5000;;
+        const int expectedTimeout = 5000; ;
         const int expectedWorkingHours = 4;
         const bool expectedActiveFlag = false;
-            
+
         // Act
         var pingConfig = new PingConfig()
         {
