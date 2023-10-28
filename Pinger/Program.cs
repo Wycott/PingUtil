@@ -14,6 +14,10 @@ public static class Program
         Container = new Container();
 
         Container.Register<IPingEngine, PingEngine>();
+        Container.Register<IPingTools, PingTools>();
+        Container.Register<IPingDisplay, PingDisplay>();
+        Container.Register<IConsoleHandler, ConsoleHandler>();
+        Container.Register<IPingConfig, PingConfig>();
         Container.Verify();
 
         var engine = Container.GetInstance<IPingEngine>();

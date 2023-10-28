@@ -8,13 +8,21 @@ namespace Pinger;
 
 public class PingEngine : IPingEngine
 {
+    private IPingTools PingToolKit { get; }
+    private IPingDisplay PingDisplay { get; }
+    private IConsoleHandler ConsoleHandler { get; }
+    private IPingConfig PingConfig { get;  }
+
+    public PingEngine(IPingTools pingTools, IPingDisplay pingDisplay, IConsoleHandler consoleHandler, IPingConfig pingConfig)
+    {
+        PingToolKit = pingTools;
+        PingDisplay = pingDisplay;
+        ConsoleHandler = consoleHandler;
+        PingConfig = pingConfig;
+    }
+
     public void Start()
     {
-        const string data = "All our lives we sweat and save.";
-        const string remoteServer = "8.8.8.8";
-        const int snoozeTime = 5000;
-        const int timeout = 10000;
-
         var usual = ForegroundColor;
         var shortest = long.MaxValue;
         var longest = long.MinValue;
@@ -27,56 +35,25 @@ public class PingEngine : IPingEngine
         long totalTime = 0;
         long failedPingsInCluster = 0;
 
-        var buffer = Encoding.ASCII.GetBytes(data);
+        var buffer = Encoding.ASCII.GetBytes(PingConfig.Data);
 
-        var stopAfterThisManyPings = CalculateWorkDayPings(snoozeTime);
+        var stopAfterThisManyPings = PingToolKit.CalculateWorkDayPings(PingConfig.SnoozeTime);
 
-        DisplaySettings(remoteServer, timeout, buffer, snoozeTime, usual, stopAfterThisManyPings);
+        PingDisplay.DisplaySettings(PingConfig.RemoteServer, PingConfig.Timeout, buffer, PingConfig.SnoozeTime, usual, stopAfterThisManyPings);
 
         var sw = Stopwatch.StartNew();
 
         while (totalPings < stopAfterThisManyPings)
         {
-            var status = PingHost(remoteServer, timeout, buffer);
+            var status = PingHost(PingConfig.RemoteServer, PingConfig.Timeout, buffer);
             var successRate = UpdatePingStats(status, ref totalPings, ref successfulPings, ref failedPings, ref totalTime, ref avgTime, ref longest, ref shortest);
-            SetDisplayColour(status, avgTime);
-            failedPingsInCluster = AudioCue(status, failedPingsInCluster);
-            var elapsed = CalculateElapsedTime(sw);
-            DisplayStatistics(successRate, status, totalPings, successfulPings, failedPings, avgTime, shortest, longest, elapsed, stopAfterThisManyPings - totalPings, usual);
+            PingDisplay.SetDisplayColour(status, avgTime);
+            failedPingsInCluster = ConsoleHandler.AudioCue(status, failedPingsInCluster);
+            var elapsed = PingToolKit.CalculateElapsedTime(sw);
+            PingDisplay.DisplayStatistics(successRate, status, totalPings, successfulPings, failedPings, avgTime, shortest, longest, elapsed, stopAfterThisManyPings - totalPings, usual);
 
-            Thread.Sleep(snoozeTime);
+            Thread.Sleep(PingConfig.SnoozeTime);
         }
-    }
-
-    private static long CalculateWorkDayPings(int snoozeTime)
-    {
-        const int workingHours = 16;
-
-        var snoozeTimeInSeconds = snoozeTime / 1000;
-
-        var pingsInADay = workingHours * 60 * 60 / snoozeTimeInSeconds;
-
-        return pingsInADay;
-    }
-
-    private static void DisplayStatistics(decimal successRate, PingStats status, long totalPings, long successfulPings,
-        long failedPings, decimal averageTime, long shortest, long longest, string elapsed, long remainingPings, ConsoleColor usual)
-    {
-        WriteLine(
-            $"{successRate}% R{status.PingTime}. T{totalPings} P{successfulPings} F{failedPings}. A{averageTime} S{shortest} L{longest} U{elapsed} C{remainingPings}");
-        ForegroundColor = usual;
-    }
-
-    private static string CalculateElapsedTime(Stopwatch sw)
-    {
-        var t = TimeSpan.FromSeconds(sw.ElapsedMilliseconds / 1000f);
-        var hours = t.Hours;
-        var minutes = t.Minutes;
-        var seconds = t.Seconds;
-
-        var elapsed = $"{hours:00}:{minutes:00}:{seconds:00}";
-
-        return elapsed;
     }
 
     private static decimal UpdatePingStats(PingStats status, ref long totalPings, ref long successfulPings,
@@ -112,46 +89,6 @@ public class PingEngine : IPingEngine
         var successRate = Math.Round(successfulPings / (decimal)totalPings * 100, 1);
 
         return successRate;
-    }
-
-    private static void SetDisplayColour(PingStats status, decimal avgTime)
-    {
-        if (!status.Success)
-        {
-            ForegroundColor = ConsoleColor.Red;
-        }
-
-        if (status.PingTime > avgTime)
-        {
-            ForegroundColor = ConsoleColor.White;
-        }
-    }
-
-    private static long AudioCue(PingStats status, long failedPingsInCluster)
-    {
-        const int beepAfter = 3;
-
-        if (status.Success)
-        {
-            return 0;
-        }
-
-        failedPingsInCluster++;
-
-        if (failedPingsInCluster >= beepAfter)
-        {
-            Beep();
-        }
-
-        return failedPingsInCluster;
-    }
-
-    private static void DisplaySettings(string remoteServer, int timeout, byte[] buffer, int snoozeTime, ConsoleColor usual, long stopAfterThisManyPings)
-    {
-        ForegroundColor = ConsoleColor.Yellow;
-        WriteLine(
-            $"Host: {remoteServer}, Timeout: {timeout}, Packet Size: {buffer.Length}, Snooze Time: {snoozeTime}, Data Points: {stopAfterThisManyPings}");
-        ForegroundColor = usual;
     }
 
     private static PingStats PingHost(string nameOrAddress, int timeout, byte[] buffer)
