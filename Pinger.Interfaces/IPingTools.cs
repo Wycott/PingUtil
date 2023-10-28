@@ -4,6 +4,6 @@ namespace Pinger.Interfaces;
 
 public interface IPingTools
 {
-    long CalculateWorkDayPings(int snoozeTime);
+    long CalculateWorkDayPings(int snoozeTime, int workingHours);
     string CalculateElapsedTime(Stopwatch sw);
 }
