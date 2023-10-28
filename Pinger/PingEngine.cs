@@ -11,7 +11,7 @@ public class PingEngine : IPingEngine
     private IPingTools PingToolKit { get; }
     private IPingDisplay PingDisplay { get; }
     private IConsoleHandler ConsoleHandler { get; }
-    private IPingConfig PingConfig { get;  }
+    private IPingConfig PingConfig { get; }
 
     public PingEngine(IPingTools pingTools, IPingDisplay pingDisplay, IConsoleHandler consoleHandler, IPingConfig pingConfig)
     {
@@ -37,7 +37,7 @@ public class PingEngine : IPingEngine
 
         var buffer = Encoding.ASCII.GetBytes(PingConfig.Data);
 
-        var stopAfterThisManyPings = PingToolKit.CalculateWorkDayPings(PingConfig.SnoozeTime);
+        var stopAfterThisManyPings = PingToolKit.CalculateWorkDayPings(PingConfig.SnoozeTime, PingConfig.WorkingHours);
 
         PingDisplay.DisplaySettings(PingConfig.RemoteServer, PingConfig.Timeout, buffer, PingConfig.SnoozeTime, usual, stopAfterThisManyPings);
 

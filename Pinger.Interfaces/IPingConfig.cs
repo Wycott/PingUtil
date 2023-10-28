@@ -7,4 +7,5 @@ public interface IPingConfig
     int SnoozeTime { get; set; }
     int Timeout { get; set; }
     bool PingerIsActive { get; set; }
+    int WorkingHours { get; set; }
 }

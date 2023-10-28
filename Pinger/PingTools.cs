@@ -5,13 +5,15 @@ namespace Pinger;
 
 public class PingTools : IPingTools
 {
-    public long CalculateWorkDayPings(int snoozeTime)
+    public long CalculateWorkDayPings(int snoozeTime, int workingHours)
     {
-        const int workingHours = 16;
+        const int millisecondsInSecond = 1000;
+        const int minutesInHour = 60;
+        const int secondsInMinute = 60;
 
-        var snoozeTimeInSeconds = snoozeTime / 1000;
+        var snoozeTimeInSeconds = snoozeTime / millisecondsInSecond;
 
-        var pingsInADay = workingHours * 60 * 60 / snoozeTimeInSeconds;
+        var pingsInADay = workingHours * minutesInHour * secondsInMinute / snoozeTimeInSeconds;
 
         return pingsInADay;
     }

@@ -9,4 +9,5 @@ public class PingConfig : IPingConfig
     public int SnoozeTime { get; set; } = 5000;
     public int Timeout { get; set; } = 10000;
     public bool PingerIsActive { get; set; } = true;
+    public int WorkingHours { get; set; } = 16;
 }
