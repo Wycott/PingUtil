@@ -1,5 +1,4 @@
 ﻿using Pinger.Interfaces;
-//using static System.Console;
 
 namespace Pinger;
 

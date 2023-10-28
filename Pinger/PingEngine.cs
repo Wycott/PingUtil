@@ -91,8 +91,13 @@ public class PingEngine : IPingEngine
         return successRate;
     }
 
-    private static PingStats PingHost(string nameOrAddress, int timeout, byte[] buffer)
+    private PingStats PingHost(string nameOrAddress, int timeout, byte[] buffer)
     {
+        if (!PingConfig.PingerIsActive)
+        {
+            return new PingStats();
+        }
+
         var pinger = new Ping();
 
         try

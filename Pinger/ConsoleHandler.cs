@@ -7,7 +7,7 @@ public class ConsoleHandler : IConsoleHandler
 {
     public void WriteToConsole(string message)
     {
-        WriteLine(message);                
+        WriteLine(message);
     }
 
     public ConsoleColor ForegroundColour
