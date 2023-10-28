@@ -1,22 +1,21 @@
 using FluentAssertions;
 
-namespace Pinger.Test
+namespace Pinger.Test;
+
+public class PingStatsTest
 {
-    public class PingStatsTest
+    [Fact]
+    public void WhenSetup_ThenItShouldBeAsExpected()
     {
-        [Fact]
-        public void WhenSetup_ThenItShouldBeAsExpected()
-        {
-            // Arrange
-            const int expectedPingTime = 20;
-            const bool expectedSuccessFlag = true;
+        // Arrange
+        const int expectedPingTime = 20;
+        const bool expectedSuccessFlag = true;
 
-            // Act
-            var ps = new PingStats { PingTime = expectedPingTime, Success = expectedSuccessFlag };
+        // Act
+        var ps = new PingStats { PingTime = expectedPingTime, Success = expectedSuccessFlag };
 
-            // Assert
-            ps.PingTime.Should().Be(expectedPingTime);
-            ps.Success.Should().Be(expectedSuccessFlag);
-        }
+        // Assert
+        ps.PingTime.Should().Be(expectedPingTime);
+        ps.Success.Should().Be(expectedSuccessFlag);
     }
 }

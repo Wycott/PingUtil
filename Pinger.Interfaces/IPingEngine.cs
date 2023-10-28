@@ -1,7 +1,6 @@
-﻿namespace Pinger.Interfaces
+﻿namespace Pinger.Interfaces;
+
+public interface IPingEngine
 {
-    public interface IPingEngine
-    {
-        void Start();
-    }
+    void Start();
 }
