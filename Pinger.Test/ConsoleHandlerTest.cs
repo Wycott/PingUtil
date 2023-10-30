@@ -20,10 +20,12 @@ public class ConsoleHandlerTest
     public void ForegroundColour()
     {
         // Arrange
-        IConsoleHandler consoleHandler = new ConsoleHandler();
+        IConsoleHandler consoleHandler = new ConsoleHandler
+        {
+            ForegroundColour = ConsoleColor.Red
+        };
 
         // Act
-        consoleHandler.ForegroundColour = ConsoleColor.Red;
         _ = consoleHandler.ForegroundColour;
 
         // Assert
