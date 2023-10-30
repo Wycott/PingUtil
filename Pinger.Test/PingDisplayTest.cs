@@ -52,7 +52,7 @@ public class PingDisplayTest
         mockConsole.Verify(x => x.WriteToConsole(It.IsAny<string>()), Times.Once());
     }
 
-    private Mock<IConsoleHandler> GetMockConsoleHandler()
+    private static Mock<IConsoleHandler> GetMockConsoleHandler()
     {
         return new Mock<IConsoleHandler>();
     }
