@@ -30,7 +30,7 @@ public class PingDisplayTest
         IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object);
 
         // Act
-        pingDisplay.SetDisplayColour(new PingStats(), 0);
+        pingDisplay.SetDisplayColour(new PingStats() { PingTime = 1 }, 0);
 
         // Assert
         pingDisplay.Should().NotBeNull();
