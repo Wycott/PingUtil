@@ -8,4 +8,6 @@ public interface IPingConfig
     int Timeout { get; set; }
     bool PingerIsActive { get; set; }
     int WorkingHours { get; set; }
+    int AlertAfterThisManyFailedPings { get; set; }
+    string CodeName { get; set; }
 }

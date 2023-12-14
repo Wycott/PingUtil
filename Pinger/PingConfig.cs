@@ -10,4 +10,6 @@ public class PingConfig : IPingConfig
     public int Timeout { get; set; } = 10000;
     public bool PingerIsActive { get; set; } = true;
     public int WorkingHours { get; set; } = 16;
+    public int AlertAfterThisManyFailedPings { get; set; } = 5;
+    public string CodeName { get; set; } = "Pimpf";
 }

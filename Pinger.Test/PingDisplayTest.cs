@@ -12,7 +12,9 @@ public class PingDisplayTest
     {
         // Arrange
         var mockConsole = GetMockConsoleHandler();
-        IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object);
+        var mockPingConfig = GetMockPingConfig();
+
+        IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
 
         // Act
         pingDisplay.DisplayStatistics(0, new PingStats(), 0, 0, 0, 0, 0, 0, "", 0, ConsoleColor.DarkMagenta);
@@ -27,7 +29,9 @@ public class PingDisplayTest
     {
         // Arrange
         var mockConsole = GetMockConsoleHandler();
-        IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object);
+        var mockPingConfig = GetMockPingConfig();
+
+        IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
 
         // Act
         pingDisplay.SetDisplayColour(new PingStats() { PingTime = 1 }, 0);
@@ -42,18 +46,25 @@ public class PingDisplayTest
     {
         // Arrange
         var mockConsole = GetMockConsoleHandler();
-        IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object);
+        var mockPingConfig = GetMockPingConfig();
+
+        IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
 
         // Act
         pingDisplay.DisplaySettings("", 0, Encoding.ASCII.GetBytes("Something"), 0, ConsoleColor.Cyan, 0);
 
         // Assert
         pingDisplay.Should().NotBeNull();
-        mockConsole.Verify(x => x.WriteToConsole(It.IsAny<string>()), Times.Once());
+        mockConsole.Verify(x => x.WriteToConsole(It.IsAny<string>()), Times.Exactly(2));
     }
 
     private static Mock<IConsoleHandler> GetMockConsoleHandler()
     {
         return new Mock<IConsoleHandler>();
+    }
+
+    private static Mock<IPingConfig> GetMockPingConfig()
+    {
+        return new Mock<IPingConfig>();
     }
 }
