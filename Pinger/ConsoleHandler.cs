@@ -5,6 +5,13 @@ namespace Pinger;
 
 public class ConsoleHandler : IConsoleHandler
 {
+    private IPingConfig PingConfig { get; set; }
+
+    public ConsoleHandler(IPingConfig pingConfig)
+    {
+        PingConfig = pingConfig;
+    }
+
     public void WriteToConsole(string message)
     {
         WriteLine(message);
@@ -18,7 +25,7 @@ public class ConsoleHandler : IConsoleHandler
 
     public long AudioCue(IPingStats status, long failedPingsInCluster)
     {
-        const int beepAfter = 3;
+        var beepAfter = PingConfig.AlertAfterThisManyFailedPings;
 
         if (status.Success)
         {

@@ -4,7 +4,6 @@ using SimpleInjector;
 
 namespace Pinger;
 
-// TODO: Remove me
 public static class Program
 {
     [ExcludeFromCodeCoverage]
