@@ -12,4 +12,5 @@ If an audio device is connected, failed pings will produce a console beep after 
 
 ---
 
+*Created: 14 August 2024*  
 *Last updated: 4 December 2023*
