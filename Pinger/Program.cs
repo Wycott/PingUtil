@@ -19,6 +19,7 @@ public static class Program
         Container.Register<IPingDisplay, PingDisplay>();
         Container.Register<IConsoleHandler, ConsoleHandler>();
         Container.Register<IPingConfig, PingConfig>();
+        Container.Register<IRollingStatistics, RollingStatistics>();
         Container.Verify();
 
         var engine = Container.GetInstance<IPingEngine>();

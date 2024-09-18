@@ -13,11 +13,12 @@ public class PingDisplayTest
         // Arrange
         var mockConsole = GetMockConsoleHandler();
         var mockPingConfig = GetMockPingConfig();
+        var mockRollingStatistics = GetMockRollingStatistics();
 
         IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
 
         // Act
-        pingDisplay.DisplayStatistics(0, new PingStats(), 0, 0, 0, 0, 0, 0, "", 0, ConsoleColor.DarkMagenta);
+        pingDisplay.DisplayStatistics(0, new PingStats(), string.Empty, ConsoleColor.DarkMagenta, mockRollingStatistics.Object);
 
         // Assert
         mockConsole.Verify(x => x.WriteToConsole(It.IsAny<string>()), Times.Once());
@@ -66,5 +67,10 @@ public class PingDisplayTest
     private static Mock<IPingConfig> GetMockPingConfig()
     {
         return new Mock<IPingConfig>();
+    }
+
+    private static Mock<IRollingStatistics> GetMockRollingStatistics()
+    {
+        return new Mock<IRollingStatistics>();
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Net.NetworkInformation;
-using System.Runtime.CompilerServices;
-using Pinger.Interfaces;
+﻿using Pinger.Interfaces;
 
 namespace Pinger;
 
@@ -16,11 +14,10 @@ public class PingDisplay : IPingDisplay
 
     }
 
-    public void DisplayStatistics(decimal successRate, IPingStats status, long totalPings, long successfulPings, long failedPings,
-        decimal averageTime, long shortest, long longest, string elapsed, long remainingPings, ConsoleColor usual)
+    public void DisplayStatistics(decimal successRate, IPingStats status, string elapsed, ConsoleColor usual, IRollingStatistics rollingStatistics)
     {
         ConsoleHandler.WriteToConsole(
-            $"{successRate}% R{status.PingTime}. T{totalPings} P{successfulPings} F{failedPings}. A{averageTime} S{shortest} L{longest} U{elapsed} C{remainingPings}");
+            $"{successRate}% R{status.PingTime}. T{rollingStatistics.TotalPings} P{rollingStatistics.SuccessfulPings} F{rollingStatistics.FailedPings}. A{rollingStatistics.AvgTime} S{rollingStatistics.Shortest} L{rollingStatistics.Longest} U{elapsed} C{rollingStatistics.StopAfterThisManyPings - rollingStatistics.TotalPings}");
         ConsoleHandler.ForegroundColour = usual;
     }
 

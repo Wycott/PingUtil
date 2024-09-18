@@ -14,8 +14,9 @@ public class PingEngineTest
         var mockPingDisplayMock = new Mock<IPingDisplay>();
         var mockConsoleHandler = new Mock<IConsoleHandler>();
         var mockPingConfig = new Mock<IPingConfig>();
+        var mockRollingStatistics = new Mock<IRollingStatistics>();
         IPingEngine pingEngine = new PingEngine(mockPingToolsMock.Object, mockPingDisplayMock.Object,
-            mockConsoleHandler.Object, mockPingConfig.Object);
+            mockConsoleHandler.Object, mockPingConfig.Object, mockRollingStatistics.Object);
 
         // Assert
         pingEngine.Should().NotBeNull();
@@ -31,11 +32,12 @@ public class PingEngineTest
         var mockPingDisplayMock = new Mock<IPingDisplay>();
         var mockConsoleHandler = new Mock<IConsoleHandler>();
         var mockPingConfig = new Mock<IPingConfig>();
+        var mockRollingStatistics = new Mock<IRollingStatistics>();
         mockPingConfig.Setup(x => x.Data).Returns("Carrying babies to the river");
         mockPingConfig.Setup(x => x.PingerIsActive).Returns(false);
         mockPingConfig.Setup(x => x.WorkingHours).Returns(1);
         IPingEngine pingEngine = new PingEngine(mockPingToolsMock.Object, mockPingDisplayMock.Object,
-            mockConsoleHandler.Object, mockPingConfig.Object);
+            mockConsoleHandler.Object, mockPingConfig.Object, mockRollingStatistics.Object);
         pingEngine.Start();
 
         // Assert
