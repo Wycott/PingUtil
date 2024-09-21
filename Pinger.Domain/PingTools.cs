@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Pinger.Interfaces;
 
-namespace Pinger;
+namespace Pinger.Domain;
 
 public class PingTools : IPingTools
 {

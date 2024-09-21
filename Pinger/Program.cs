@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Pinger.Domain;
 using Pinger.Interfaces;
 using SimpleInjector;
 

@@ -2,6 +2,7 @@
 using Moq;
 using Pinger.Interfaces;
 using System.Text;
+using Pinger.Domain;
 
 namespace Pinger.Test;
 

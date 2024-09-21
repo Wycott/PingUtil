@@ -1,6 +1,7 @@
 ﻿using Pinger.Interfaces;
 using FluentAssertions;
 using Moq;
+using Pinger.Domain;
 
 namespace Pinger.Test;
 

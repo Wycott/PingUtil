@@ -1,6 +1,6 @@
 ﻿using Pinger.Interfaces;
 
-namespace Pinger;
+namespace Pinger.Domain;
 
 public class PingDisplay : IPingDisplay
 {

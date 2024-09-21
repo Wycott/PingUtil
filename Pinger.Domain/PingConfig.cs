@@ -1,6 +1,6 @@
 ﻿using Pinger.Interfaces;
 
-namespace Pinger;
+namespace Pinger.Domain;
 
 public class PingConfig : IPingConfig
 {
@@ -11,5 +11,5 @@ public class PingConfig : IPingConfig
     public bool PingerIsActive { get; set; } = true;
     public int WorkingHours { get; set; } = 16;
     public int AlertAfterThisManyFailedPings { get; set; } = 5;
-    public string CodeName { get; set; } = "Pimpf";
+    public string CodeName { get; set; } = "Oh Well";
 }
