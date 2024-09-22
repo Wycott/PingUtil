@@ -21,7 +21,6 @@ public class PingEngineTest
 
         // Assert
         pingEngine.Should().NotBeNull();
-
     }
 
     [Fact]

@@ -53,6 +53,7 @@ public class PingEngine : IPingEngine
         var elapsed = PingToolKit.CalculateElapsedTime(sw);
         PingDisplay.DisplayStatistics(successRate, status, elapsed, usual, RollingStatistics);
         Thread.Sleep(PingConfig.SnoozeTime);
+
         return failedPingsInCluster;
     }
 
