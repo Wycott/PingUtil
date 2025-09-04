@@ -1,5 +1,7 @@
-using System.Diagnostics;
+using AiAnnotations;
+using AiAnnotations.Types;
 using Pinger.Interfaces;
+using System.Diagnostics;
 
 namespace Pinger.Domain;
 
@@ -18,15 +20,11 @@ public class PingTools : IPingTools
         return pingsInADay;
     }
 
+    [AiGenerated(Authorship.Hybrid)]
     public string CalculateElapsedTime(Stopwatch sw)
     {
-        var t = TimeSpan.FromSeconds(sw.ElapsedMilliseconds / 1000f);
-        var hours = t.Hours;
-        var minutes = t.Minutes;
-        var seconds = t.Seconds;
+        var elapsed = sw.Elapsed;
 
-        var elapsed = $"{hours:00}:{minutes:00}:{seconds:00}";
-
-        return elapsed;
+        return $"{elapsed.Hours:00}:{elapsed.Minutes:00}:{elapsed.Seconds:00}";
     }
 }

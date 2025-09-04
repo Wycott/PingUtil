@@ -1,4 +1,4 @@
-﻿using Pinger.Interfaces;
+using Pinger.Interfaces;
 
 namespace Pinger.Domain;
 
