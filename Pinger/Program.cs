@@ -1,10 +1,13 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using AiAnnotations;
 using Pinger.Domain;
 using Pinger.Interfaces;
 using SimpleInjector;
+using System.Diagnostics.CodeAnalysis;
+using AiAnnotations.Types;
 
 namespace Pinger;
 
+[AiGenerated(Authorship.Hybrid)]
 public static class Program
 {
     [ExcludeFromCodeCoverage]
@@ -13,18 +16,24 @@ public static class Program
     [ExcludeFromCodeCoverage]
     public static void Main()
     {
-        Container = new Container();
-
-        Container.Register<IPingEngine, PingEngine>();
-        Container.Register<IPingTools, PingTools>();
-        Container.Register<IPingDisplay, PingDisplay>();
-        Container.Register<IConsoleHandler, ConsoleHandler>();
-        Container.Register<IPingConfig, PingConfig>();
-        Container.Register<IRollingStatistics, RollingStatistics>();
-        Container.Verify();
-
+        Container = ConfigureContainer();
         var engine = Container.GetInstance<IPingEngine>();
         StartWork(engine);
+    }
+
+    private static Container ConfigureContainer()
+    {
+        var container = new Container();
+        
+        container.Register<IPingEngine, PingEngine>();
+        container.Register<IPingTools, PingTools>();
+        container.Register<IPingDisplay, PingDisplay>();
+        container.Register<IConsoleHandler, ConsoleHandler>();
+        container.Register<IPingConfig, PingConfig>();
+        container.Register<IRollingStatistics, RollingStatistics>();
+        
+        container.Verify();
+        return container;
     }
 
     public static void StartWork(IPingEngine engine)

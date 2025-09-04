@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AiAnnotations" Version="1.0.0.8" />
     <PackageReference Include="fluentassertions" Version="6.12.2" />
     <PackageReference Include="SimpleInjector" Version="5.5.0" />
   </ItemGroup>
