@@ -19,7 +19,7 @@ public class ConsoleHandler : IConsoleHandler
 
     public ConsoleColor ForegroundColour
     {
-        get => Console.ForegroundColor;
+        get => ForegroundColor;
         set => ForegroundColor = value;
     }
 
