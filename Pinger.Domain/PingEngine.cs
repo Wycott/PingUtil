@@ -26,7 +26,7 @@ public class PingEngine : IPingEngine
     public void Start()
     {
         var usual = ForegroundColor;
-        
+
         long failedPingsInCluster = 0;
 
         var buffer = Encoding.ASCII.GetBytes(PingConfig.Data);
