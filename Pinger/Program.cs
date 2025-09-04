@@ -1,9 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using AiAnnotations;
+using AiAnnotations.Types;
 using Pinger.Domain;
 using Pinger.Interfaces;
 using SimpleInjector;
-using System.Diagnostics.CodeAnalysis;
-using AiAnnotations.Types;
 
 namespace Pinger;
 
@@ -24,15 +24,16 @@ public static class Program
     private static Container ConfigureContainer()
     {
         var container = new Container();
-        
+
         container.Register<IPingEngine, PingEngine>();
         container.Register<IPingTools, PingTools>();
         container.Register<IPingDisplay, PingDisplay>();
         container.Register<IConsoleHandler, ConsoleHandler>();
         container.Register<IPingConfig, PingConfig>();
         container.Register<IRollingStatistics, RollingStatistics>();
-        
+
         container.Verify();
+
         return container;
     }
 

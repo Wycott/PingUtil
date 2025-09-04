@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Moq;
 using Pinger.Domain;
 using Pinger.Interfaces;

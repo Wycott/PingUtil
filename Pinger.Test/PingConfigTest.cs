@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Pinger.Domain;
 
 namespace Pinger.Test;

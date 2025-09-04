@@ -1,0 +1,1 @@
+All return statements must be preceded with a blank line unless it is the only statement

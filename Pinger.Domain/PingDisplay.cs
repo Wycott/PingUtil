@@ -1,4 +1,4 @@
-﻿using Pinger.Interfaces;
+using Pinger.Interfaces;
 
 namespace Pinger.Domain;
 
@@ -11,7 +11,6 @@ public class PingDisplay : IPingDisplay
     {
         ConsoleHandler = consoleHandler;
         PingConfig = pingConfig;
-
     }
 
     public void DisplayStatistics(decimal successRate, IPingStats status, string elapsed, ConsoleColor usual, IRollingStatistics rollingStatistics)

@@ -1,4 +1,4 @@
-﻿using Moq;
+using Moq;
 using Pinger.Interfaces;
 
 namespace Pinger.Test;

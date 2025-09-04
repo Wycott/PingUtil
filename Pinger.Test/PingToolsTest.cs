@@ -1,5 +1,5 @@
-﻿using FluentAssertions;
 using System.Diagnostics;
+using FluentAssertions;
 using Pinger.Domain;
 using Pinger.Interfaces;
 
