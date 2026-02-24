@@ -12,6 +12,7 @@ public class PingToolsTest
     {
         // Arrange
         const int expectedDataPoints = 11520;
+
         IPingTools pingTools = new PingTools();
 
         // Act
