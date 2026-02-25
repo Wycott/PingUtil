@@ -1,8 +1,11 @@
+using AiAnnotations;
+using AiAnnotations.Types;
 using FluentAssertions;
 using Pinger.Domain;
 
 namespace Pinger.Test;
 
+[AiGenerated(Authorship.Hybrid)]
 public class PingConfigTest
 {
     [Fact]
@@ -34,5 +37,21 @@ public class PingConfigTest
         pingConfig.Timeout.Should().Be(expectedTimeout);
         pingConfig.WorkingHours.Should().Be(expectedWorkingHours);
         pingConfig.PingerIsActive.Should().Be(expectedActiveFlag);
+    }
+
+    [Fact]
+    public void AlertAfterThisManyFailedPings_ShouldBeSettable()
+    {
+        var pingConfig = new PingConfig { AlertAfterThisManyFailedPings = 10 };
+
+        pingConfig.AlertAfterThisManyFailedPings.Should().Be(10);
+    }
+
+    [Fact]
+    public void CodeName_ShouldBeSettable()
+    {
+        var pingConfig = new PingConfig { CodeName = "Test Name" };
+
+        pingConfig.CodeName.Should().Be("Test Name");
     }
 }

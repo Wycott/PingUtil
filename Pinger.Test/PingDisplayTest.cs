@@ -1,11 +1,14 @@
-using System.Text;
+using AiAnnotations;
+using AiAnnotations.Types;
 using FluentAssertions;
 using Moq;
 using Pinger.Domain;
 using Pinger.Interfaces;
+using System.Text;
 
 namespace Pinger.Test;
 
+[AiGenerated(Authorship.Hybrid)]
 public class PingDisplayTest
 {
     [Fact]
@@ -41,6 +44,30 @@ public class PingDisplayTest
         // Assert
         pingDisplay.Should().NotBeNull();
         mockConsole.Verify(x => x.WriteToConsole(It.IsAny<string>()), Times.Never);
+    }
+
+    [Fact]
+    public void SetDisplayColour_WhenFailed_SetsRedColour()
+    {
+        var mockConsole = GetMockConsoleHandler();
+        var mockPingConfig = GetMockPingConfig();
+        IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
+
+        pingDisplay.SetDisplayColour(new PingStats { Success = false }, 10);
+
+        mockConsole.VerifySet(x => x.ForegroundColour = ConsoleColor.Red, Times.Once);
+    }
+
+    [Fact]
+    public void SetDisplayColour_WhenPingTimeExceedsAverage_SetsWhiteColour()
+    {
+        var mockConsole = GetMockConsoleHandler();
+        var mockPingConfig = GetMockPingConfig();
+        IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
+
+        pingDisplay.SetDisplayColour(new PingStats { Success = true, PingTime = 20 }, 10);
+
+        mockConsole.VerifySet(x => x.ForegroundColour = ConsoleColor.White, Times.Once);
     }
 
     [Fact]

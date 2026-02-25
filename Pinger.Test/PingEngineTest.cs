@@ -1,3 +1,5 @@
+using AiAnnotations;
+using AiAnnotations.Types;
 using FluentAssertions;
 using Moq;
 using Pinger.Domain;
@@ -5,6 +7,7 @@ using Pinger.Interfaces;
 
 namespace Pinger.Test;
 
+[AiGenerated(Authorship.Hybrid)]
 public class PingEngineTest
 {
     [Fact]
@@ -42,5 +45,25 @@ public class PingEngineTest
 
         // Assert
         pingEngine.Should().NotBeNull();
+    }
+
+    [Fact]
+    public void Start_CallsDisplaySettings()
+    {
+        var mockPingTools = new Mock<IPingTools>();
+        mockPingTools.Setup(x => x.CalculateWorkDayPings(It.IsAny<int>(), It.IsAny<int>())).Returns(1);
+        var mockPingDisplay = new Mock<IPingDisplay>();
+        var mockConsoleHandler = new Mock<IConsoleHandler>();
+        var mockPingConfig = new Mock<IPingConfig>();
+        mockPingConfig.Setup(x => x.Data).Returns("test");
+        mockPingConfig.Setup(x => x.PingerIsActive).Returns(false);
+        var mockRollingStatistics = new Mock<IRollingStatistics>();
+
+        IPingEngine pingEngine = new PingEngine(mockPingTools.Object, mockPingDisplay.Object,
+            mockConsoleHandler.Object, mockPingConfig.Object, mockRollingStatistics.Object);
+        pingEngine.Start();
+
+        mockPingDisplay.Verify(x => x.DisplaySettings(It.IsAny<string>(), It.IsAny<int>(), 
+            It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<ConsoleColor>(), It.IsAny<long>()), Times.Once);
     }
 }
