@@ -5,22 +5,19 @@ using Pinger.Interfaces;
 
 namespace Pinger.Domain;
 
-public class PingEngine : IPingEngine
+public class PingEngine(
+    IPingTools pingTools,
+    IPingDisplay pingDisplay,
+    IConsoleHandler consoleHandler,
+    IPingConfig pingConfig,
+    IRollingStatistics rollingStatistics)
+    : IPingEngine
 {
-    private IPingTools PingTools { get; }
-    private IPingDisplay PingDisplay { get; }
-    private IConsoleHandler ConsoleHandler { get; }
-    private IPingConfig PingConfig { get; }
-    private IRollingStatistics RollingStatistics { get; }
-
-    public PingEngine(IPingTools pingTools, IPingDisplay pingDisplay, IConsoleHandler consoleHandler, IPingConfig pingConfig, IRollingStatistics rollingStatistics)
-    {
-        PingTools = pingTools;
-        PingDisplay = pingDisplay;
-        ConsoleHandler = consoleHandler;
-        PingConfig = pingConfig;
-        RollingStatistics = rollingStatistics;
-    }
+    private IPingTools PingTools { get; } = pingTools;
+    private IPingDisplay PingDisplay { get; } = pingDisplay;
+    private IConsoleHandler ConsoleHandler { get; } = consoleHandler;
+    private IPingConfig PingConfig { get; } = pingConfig;
+    private IRollingStatistics RollingStatistics { get; } = rollingStatistics;
 
     public void Start()
     {
@@ -77,9 +74,12 @@ public class PingEngine : IPingEngine
     {
         var status = PingHost(PingConfig.RemoteServer, PingConfig.Timeout, buffer);
         var successRate = RollingStatistics.RecordPing(status);
+
         PingDisplay.SetDisplayColour(status, RollingStatistics.AvgTime, usual);
         ConsoleHandler.NotifyPingResult(status);
+
         var elapsed = PingTools.FormatElapsedTime(sw.Elapsed);
+
         PingDisplay.DisplayStatistics(successRate, status, elapsed, usual, RollingStatistics);
     }
 

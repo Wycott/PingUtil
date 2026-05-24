@@ -41,8 +41,11 @@ public class PingDisplayTest
     {
         var mockConsole = GetMockConsoleHandler();
         var mockPingConfig = GetMockPingConfig();
+
         mockPingConfig.Setup(x => x.SnoozeTime).Returns(5000);
+
         var mockRollingStatistics = new Mock<IRollingStatistics>();
+
         mockRollingStatistics.Setup(x => x.StopAfterThisManyPings).Returns(100);
         mockRollingStatistics.Setup(x => x.TotalPings).Returns(10);
 
@@ -58,6 +61,7 @@ public class PingDisplayTest
     {
         var mockConsole = GetMockConsoleHandler();
         var mockPingConfig = GetMockPingConfig();
+
         IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
 
         pingDisplay.SetDisplayColour(new PingStats { Success = false }, 10, ConsoleColor.Gray);
@@ -70,6 +74,7 @@ public class PingDisplayTest
     {
         var mockConsole = GetMockConsoleHandler();
         var mockPingConfig = GetMockPingConfig();
+
         IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
 
         pingDisplay.SetDisplayColour(new PingStats { Success = true, PingTime = 20 }, 10, ConsoleColor.Gray);
@@ -82,6 +87,7 @@ public class PingDisplayTest
     {
         var mockConsole = GetMockConsoleHandler();
         var mockPingConfig = GetMockPingConfig();
+
         IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
 
         pingDisplay.SetDisplayColour(new PingStats { Success = true, PingTime = 5 }, 10, ConsoleColor.DarkYellow);
@@ -94,6 +100,7 @@ public class PingDisplayTest
     {
         var mockConsole = GetMockConsoleHandler();
         var mockPingConfig = GetMockPingConfig();
+
         IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
 
         pingDisplay.SetDisplayColour(new PingStats { Success = false, PingTime = 100 }, 10, ConsoleColor.Gray);
@@ -107,6 +114,7 @@ public class PingDisplayTest
     {
         var mockConsole = GetMockConsoleHandler();
         var mockPingConfig = GetMockPingConfig();
+
         IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
 
         pingDisplay.DisplaySettings("8.8.8.8", 10000, Encoding.ASCII.GetBytes("test"), ConsoleColor.Gray, 100);
@@ -119,6 +127,7 @@ public class PingDisplayTest
     {
         var mockConsole = GetMockConsoleHandler();
         var mockPingConfig = GetMockPingConfig();
+
         mockPingConfig.Setup(x => x.CodeName).Returns("TestCode");
         IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
 
@@ -133,6 +142,7 @@ public class PingDisplayTest
     {
         var mockConsole = GetMockConsoleHandler();
         var mockPingConfig = GetMockPingConfig();
+
         IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
 
         pingDisplay.DisplaySettings("8.8.8.8", 10000, Encoding.ASCII.GetBytes("test"), ConsoleColor.Cyan, 100);
@@ -146,6 +156,7 @@ public class PingDisplayTest
         var mockConsole = GetMockConsoleHandler();
         var mockPingConfig = GetMockPingConfig();
         var mockRollingStatistics = new Mock<IRollingStatistics>();
+
         mockRollingStatistics.Setup(x => x.Shortest).Returns(long.MaxValue);
 
         IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
@@ -161,6 +172,7 @@ public class PingDisplayTest
         var mockConsole = GetMockConsoleHandler();
         var mockPingConfig = GetMockPingConfig();
         var mockRollingStatistics = new Mock<IRollingStatistics>();
+
         mockRollingStatistics.Setup(x => x.Shortest).Returns(12);
 
         IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
@@ -176,6 +188,7 @@ public class PingDisplayTest
         var mockConsole = GetMockConsoleHandler();
         var mockPingConfig = GetMockPingConfig();
         var mockRollingStatistics = new Mock<IRollingStatistics>();
+
         mockRollingStatistics.Setup(x => x.TotalPings).Returns(100);
         mockRollingStatistics.Setup(x => x.SuccessfulPings).Returns(95);
         mockRollingStatistics.Setup(x => x.FailedPings).Returns(5);
@@ -210,18 +223,9 @@ public class PingDisplayTest
         mockConsole.VerifySet(x => x.ForegroundColour = ConsoleColor.Cyan, Times.Once);
     }
 
-    private static Mock<IConsoleHandler> GetMockConsoleHandler()
-    {
-        return new Mock<IConsoleHandler>();
-    }
+    private static Mock<IConsoleHandler> GetMockConsoleHandler() => new();
 
-    private static Mock<IPingConfig> GetMockPingConfig()
-    {
-        return new Mock<IPingConfig>();
-    }
+    private static Mock<IPingConfig> GetMockPingConfig() => new();
 
-    private static Mock<IRollingStatistics> GetMockRollingStatistics()
-    {
-        return new Mock<IRollingStatistics>();
-    }
+    private static Mock<IRollingStatistics> GetMockRollingStatistics() => new();
 }

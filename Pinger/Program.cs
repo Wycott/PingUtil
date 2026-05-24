@@ -12,15 +12,19 @@ public static class Program
     public static void Main()
     {
         using var serviceProvider = ConfigureServices();
+
         var engine = serviceProvider.GetRequiredService<IPingEngine>();
+
         StartWork(engine);
     }
 
     public static ServiceProvider ConfigureServices()
     {
+        const string configFile = "appsettings.json";
+
         var configuration = new ConfigurationBuilder()
             .SetBasePath(AppContext.BaseDirectory)
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+            .AddJsonFile(configFile, optional: true, reloadOnChange: false)
             .Build();
 
         var services = new ServiceCollection();
@@ -36,8 +40,5 @@ public static class Program
         return services.BuildServiceProvider();
     }
 
-    public static void StartWork(IPingEngine engine)
-    {
-        engine.Start();
-    }
+    public static void StartWork(IPingEngine engine) => engine.Start();
 }

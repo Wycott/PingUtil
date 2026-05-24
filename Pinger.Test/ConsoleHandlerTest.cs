@@ -41,7 +41,9 @@ public class ConsoleHandlerTest
     public void NotifyPingResult_WhenFailedBelowThreshold_DoesNotBeep()
     {
         var config = new Mock<IPingConfig>();
+
         config.Setup(x => x.AlertAfterThisManyFailedPings).Returns(5);
+
         var consoleHandler = new SilentConsoleHandler(config.Object);
 
         consoleHandler.NotifyPingResult(new PingStats { Success = false });
@@ -54,7 +56,9 @@ public class ConsoleHandlerTest
     public void NotifyPingResult_WhenFailedAtThreshold_Beeps()
     {
         var config = new Mock<IPingConfig>();
+
         config.Setup(x => x.AlertAfterThisManyFailedPings).Returns(3);
+
         var consoleHandler = new SilentConsoleHandler(config.Object);
 
         consoleHandler.NotifyPingResult(new PingStats { Success = false });
@@ -68,7 +72,9 @@ public class ConsoleHandlerTest
     public void NotifyPingResult_ContinuedFailuresBeyondThreshold_KeepsBeeping()
     {
         var config = new Mock<IPingConfig>();
+
         config.Setup(x => x.AlertAfterThisManyFailedPings).Returns(2);
+
         var consoleHandler = new SilentConsoleHandler(config.Object);
 
         consoleHandler.NotifyPingResult(new PingStats { Success = false });
@@ -83,7 +89,9 @@ public class ConsoleHandlerTest
     public void NotifyPingResult_WhenSuccess_ResetsCluster()
     {
         var config = new Mock<IPingConfig>();
+
         config.Setup(x => x.AlertAfterThisManyFailedPings).Returns(2);
+
         var consoleHandler = new SilentConsoleHandler(config.Object);
 
         // Fail once (below threshold)
@@ -102,7 +110,9 @@ public class ConsoleHandlerTest
     public void NotifyPingResult_AfterReset_CanReachThresholdAgain()
     {
         var config = new Mock<IPingConfig>();
+
         config.Setup(x => x.AlertAfterThisManyFailedPings).Returns(2);
+
         var consoleHandler = new SilentConsoleHandler(config.Object);
 
         // First cluster hits threshold
@@ -119,15 +129,11 @@ public class ConsoleHandlerTest
         consoleHandler.BeepCount.Should().Be(2);
     }
 
-    private static IPingConfig GetPingConfigMock()
-    {
-        return new Mock<IPingConfig>().Object;
-    }
+    private static IPingConfig GetPingConfigMock() => new Mock<IPingConfig>().Object;
 
-    private class SilentConsoleHandler : ConsoleHandler
+    private class SilentConsoleHandler(IPingConfig pingConfig) : ConsoleHandler(pingConfig)
     {
         public int BeepCount { get; private set; }
-        public SilentConsoleHandler(IPingConfig pingConfig) : base(pingConfig) { }
-        protected override void Beep() { BeepCount++; }
+        protected override void Beep() => BeepCount++;
     }
 }

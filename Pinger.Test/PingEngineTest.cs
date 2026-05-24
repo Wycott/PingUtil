@@ -32,6 +32,7 @@ public class PingEngineTest
     {
         var mockRollingStatistics = new Mock<IRollingStatistics>();
         var pingCount = 0L;
+
         mockRollingStatistics.Setup(x => x.TotalPings).Returns(() => pingCount);
         mockRollingStatistics.Setup(x => x.RecordPing(It.IsAny<IPingStats>()))
             .Callback(() => pingCount++)
@@ -83,6 +84,7 @@ public class PingEngineTest
     public void Start_CallsFormatElapsedTime()
     {
         var mockPingTools = new Mock<IPingTools>();
+
         mockPingTools.Setup(x => x.CalculateWorkDayPings(It.IsAny<int>(), It.IsAny<int>())).Returns(1);
         mockPingTools.Setup(x => x.FormatElapsedTime(It.IsAny<TimeSpan>())).Returns("00:00:05");
 
@@ -115,7 +117,9 @@ public class PingEngineTest
         if (rollingStatistics == null)
         {
             rollingStatistics = new Mock<IRollingStatistics>();
+
             var count = 0L;
+
             rollingStatistics.Setup(x => x.TotalPings).Returns(() => count);
             rollingStatistics.Setup(x => x.RecordPing(It.IsAny<IPingStats>()))
                 .Callback(() => count++)

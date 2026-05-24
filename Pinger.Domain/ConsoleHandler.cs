@@ -3,20 +3,12 @@ using static System.Console;
 
 namespace Pinger.Domain;
 
-public class ConsoleHandler : IConsoleHandler
+public class ConsoleHandler(IPingConfig pingConfig) : IConsoleHandler
 {
-    private IPingConfig PingConfig { get; }
-    private long _failedPingsInCluster;
+    private IPingConfig PingConfig { get; } = pingConfig;
+    private long failedPingsInCluster;
 
-    public ConsoleHandler(IPingConfig pingConfig)
-    {
-        PingConfig = pingConfig;
-    }
-
-    public void WriteToConsole(string message)
-    {
-        WriteLine(message);
-    }
+    public void WriteToConsole(string message) => WriteLine(message);
 
     public ConsoleColor ForegroundColour
     {
@@ -24,22 +16,20 @@ public class ConsoleHandler : IConsoleHandler
         set => ForegroundColor = value;
     }
 
-    protected virtual void Beep()
-    {
-        System.Console.Beep();
-    }
+    protected virtual void Beep() => System.Console.Beep();
 
     public void NotifyPingResult(IPingStats status)
     {
         if (status.Success)
         {
-            _failedPingsInCluster = 0;
+            failedPingsInCluster = 0;
+
             return;
         }
 
-        _failedPingsInCluster++;
+        failedPingsInCluster++;
 
-        if (_failedPingsInCluster >= PingConfig.AlertAfterThisManyFailedPings)
+        if (failedPingsInCluster >= PingConfig.AlertAfterThisManyFailedPings)
         {
             Beep();
         }

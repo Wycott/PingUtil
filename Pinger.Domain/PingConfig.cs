@@ -21,6 +21,7 @@ public class PingConfig : IPingConfig
     public PingConfig(IConfiguration configuration)
     {
         var section = configuration.GetSection("PingSettings");
+
         if (section.Exists())
         {
             section.Bind(this);

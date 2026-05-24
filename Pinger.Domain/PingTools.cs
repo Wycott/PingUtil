@@ -23,8 +23,5 @@ public class PingTools : IPingTools
         return totalMilliseconds / snoozeTime;
     }
 
-    public string FormatElapsedTime(TimeSpan elapsed)
-    {
-        return $"{(int)elapsed.TotalHours:00}:{elapsed.Minutes:00}:{elapsed.Seconds:00}";
-    }
+    public string FormatElapsedTime(TimeSpan elapsed) => $"{(int)elapsed.TotalHours:00}:{elapsed.Minutes:00}:{elapsed.Seconds:00}";
 }
