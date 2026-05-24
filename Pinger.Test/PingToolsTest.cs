@@ -1,50 +1,23 @@
-using AiAnnotations;
-using AiAnnotations.Types;
 using FluentAssertions;
 using Pinger.Domain;
 using Pinger.Interfaces;
-using System.Diagnostics;
 
 namespace Pinger.Test;
 
-[AiGenerated(Authorship.Hybrid)]
 public class PingToolsTest
 {
     [Fact]
-    public void CalculateWorkDayPings()
+    public void CalculateWorkDayPings_16Hours5SecondSnooze()
     {
-        // Arrange
-        const int expectedDataPoints = 11520;
-
         IPingTools pingTools = new PingTools();
 
-        // Act
         var res = pingTools.CalculateWorkDayPings(5000, 16);
 
-        // Assert
-        res.Should().Be(expectedDataPoints);
+        res.Should().Be(11520);
     }
 
     [Fact]
-    public void CalculateElapsedTime()
-    {
-        // Arrange
-        const string expectedResult = "00:00:00";
-
-        IPingTools pingTools = new PingTools();
-        var sw = new Stopwatch();
-        sw.Start();
-        sw.Stop();
-
-        // Act
-        var res = pingTools.CalculateElapsedTime(sw);
-
-        // Assert
-        res.Should().Be(expectedResult);
-    }
-
-    [Fact]
-    public void CalculateWorkDayPings_WithDifferentValues()
+    public void CalculateWorkDayPings_1Hour1SecondSnooze()
     {
         IPingTools pingTools = new PingTools();
 
@@ -54,16 +27,53 @@ public class PingToolsTest
     }
 
     [Fact]
-    public void CalculateElapsedTime_WithLongerDuration()
+    public void CalculateWorkDayPings_SmallSnoozeTime()
     {
         IPingTools pingTools = new PingTools();
-        var sw = new Stopwatch();
-        sw.Start();
-        Thread.Sleep(1000);
-        sw.Stop();
 
-        var result = pingTools.CalculateElapsedTime(sw);
+        // 2000ms snooze, 1 hour = 1800 pings
+        var result = pingTools.CalculateWorkDayPings(2000, 1);
 
-        result.Should().MatchRegex(@"\d{2}:\d{2}:\d{2}");
+        result.Should().Be(1800);
+    }
+
+    [Fact]
+    public void FormatElapsedTime_Zero()
+    {
+        IPingTools pingTools = new PingTools();
+
+        var res = pingTools.FormatElapsedTime(TimeSpan.Zero);
+
+        res.Should().Be("00:00:00");
+    }
+
+    [Fact]
+    public void FormatElapsedTime_OneHourOneMinuteOneSecond()
+    {
+        IPingTools pingTools = new PingTools();
+
+        var result = pingTools.FormatElapsedTime(TimeSpan.FromSeconds(3661));
+
+        result.Should().Be("01:01:01");
+    }
+
+    [Fact]
+    public void FormatElapsedTime_Over24Hours_DoesNotWrap()
+    {
+        IPingTools pingTools = new PingTools();
+
+        var result = pingTools.FormatElapsedTime(TimeSpan.FromHours(25.5));
+
+        result.Should().Be("25:30:00");
+    }
+
+    [Fact]
+    public void FormatElapsedTime_JustUnderAnHour()
+    {
+        IPingTools pingTools = new PingTools();
+
+        var result = pingTools.FormatElapsedTime(TimeSpan.FromMinutes(59).Add(TimeSpan.FromSeconds(59)));
+
+        result.Should().Be("00:59:59");
     }
 }

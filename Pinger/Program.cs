@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using AiAnnotations;
 using AiAnnotations.Types;
+using Microsoft.Extensions.Configuration;
 using Pinger.Domain;
 using Pinger.Interfaces;
 using SimpleInjector;
@@ -23,13 +24,19 @@ public static class Program
 
     private static Container ConfigureContainer()
     {
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+            .Build();
+
         var container = new Container();
 
+        container.RegisterInstance<IConfiguration>(configuration);
         container.Register<IPingEngine, PingEngine>();
         container.Register<IPingTools, PingTools>();
         container.Register<IPingDisplay, PingDisplay>();
         container.Register<IConsoleHandler, ConsoleHandler>();
-        container.Register<IPingConfig, PingConfig>();
+        container.Register<IPingConfig>(() => new PingConfig(configuration));
         container.Register<IRollingStatistics, RollingStatistics>();
 
         container.Verify();

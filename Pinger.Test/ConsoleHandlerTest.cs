@@ -1,5 +1,3 @@
-using AiAnnotations;
-using AiAnnotations.Types;
 using FluentAssertions;
 using Moq;
 using Pinger.Domain;
@@ -7,99 +5,129 @@ using Pinger.Interfaces;
 
 namespace Pinger.Test;
 
-[AiGenerated(Authorship.Hybrid)]
 public class ConsoleHandlerTest
 {
     [Fact]
-    public void WriteToConsole()
+    public void WriteToConsole_DoesNotThrow()
     {
-        // Arrange/Act
         IConsoleHandler consoleHandler = new ConsoleHandler(GetPingConfigMock());
         consoleHandler.WriteToConsole("Message");
 
-        // Assert
         consoleHandler.Should().NotBeNull();
     }
 
     [Fact]
-    public void ForegroundColour()
+    public void ForegroundColour_CanBeSetWithoutThrowing()
     {
-        // Arrange
-        IConsoleHandler consoleHandler = new ConsoleHandler(GetPingConfigMock())
-        {
-            ForegroundColour = ConsoleColor.Red
-        };
-
-        // Act
-        _ = consoleHandler.ForegroundColour;
-
-        // Assert
-        consoleHandler.Should().NotBeNull();
-    }
-
-    [Fact]
-    public void AudioCue_WhenSuccess()
-    {
-        // Arrange
         IConsoleHandler consoleHandler = new ConsoleHandler(GetPingConfigMock());
 
-        // Act
-        consoleHandler.AudioCue(new PingStats(), 5);
+        var act = () => consoleHandler.ForegroundColour = ConsoleColor.Red;
 
-        // Assert
-        consoleHandler.Should().NotBeNull();
+        act.Should().NotThrow();
     }
 
     [Fact]
-    public void AudioCue_WhenFailed()
+    public void NotifyPingResult_WhenSuccess_DoesNotBeep()
     {
-        // Arrange
-        IConsoleHandler consoleHandler = new ConsoleHandler(GetPingConfigMock());
+        var config = new Mock<IPingConfig>();
+        var consoleHandler = new SilentConsoleHandler(config.Object);
 
-        // Act
-        consoleHandler.AudioCue(new PingStats() { Success = true }, 0);
+        consoleHandler.NotifyPingResult(new PingStats { Success = true });
 
-        // Assert
-        consoleHandler.Should().NotBeNull();
+        consoleHandler.BeepCount.Should().Be(0);
     }
 
     [Fact]
-    public void AudioCue_WhenFailedBelowThreshold_ReturnsIncrementedCount()
+    public void NotifyPingResult_WhenFailedBelowThreshold_DoesNotBeep()
     {
         var config = new Mock<IPingConfig>();
         config.Setup(x => x.AlertAfterThisManyFailedPings).Returns(5);
-        IConsoleHandler consoleHandler = new ConsoleHandler(config.Object);
+        var consoleHandler = new SilentConsoleHandler(config.Object);
 
-        var result = consoleHandler.AudioCue(new PingStats { Success = false }, 2);
+        consoleHandler.NotifyPingResult(new PingStats { Success = false });
+        consoleHandler.NotifyPingResult(new PingStats { Success = false });
 
-        result.Should().Be(3);
+        consoleHandler.BeepCount.Should().Be(0);
     }
 
     [Fact]
-    public void AudioCue_WhenFailedAtThreshold_ReturnsIncrementedCount()
+    public void NotifyPingResult_WhenFailedAtThreshold_Beeps()
     {
         var config = new Mock<IPingConfig>();
         config.Setup(x => x.AlertAfterThisManyFailedPings).Returns(3);
-        IConsoleHandler consoleHandler = new ConsoleHandler(config.Object);
+        var consoleHandler = new SilentConsoleHandler(config.Object);
 
-        var result = consoleHandler.AudioCue(new PingStats { Success = false }, 2);
+        consoleHandler.NotifyPingResult(new PingStats { Success = false });
+        consoleHandler.NotifyPingResult(new PingStats { Success = false });
+        consoleHandler.NotifyPingResult(new PingStats { Success = false });
 
-        result.Should().Be(3);
+        consoleHandler.BeepCount.Should().Be(1);
     }
 
     [Fact]
-    public void AudioCue_WhenSuccess_ReturnsZero()
+    public void NotifyPingResult_ContinuedFailuresBeyondThreshold_KeepsBeeping()
     {
         var config = new Mock<IPingConfig>();
-        IConsoleHandler consoleHandler = new ConsoleHandler(config.Object);
+        config.Setup(x => x.AlertAfterThisManyFailedPings).Returns(2);
+        var consoleHandler = new SilentConsoleHandler(config.Object);
 
-        var result = consoleHandler.AudioCue(new PingStats { Success = true }, 10);
+        consoleHandler.NotifyPingResult(new PingStats { Success = false });
+        consoleHandler.NotifyPingResult(new PingStats { Success = false }); // threshold hit
+        consoleHandler.NotifyPingResult(new PingStats { Success = false }); // still above
+        consoleHandler.NotifyPingResult(new PingStats { Success = false }); // still above
 
-        result.Should().Be(0);
+        consoleHandler.BeepCount.Should().Be(3);
+    }
+
+    [Fact]
+    public void NotifyPingResult_WhenSuccess_ResetsCluster()
+    {
+        var config = new Mock<IPingConfig>();
+        config.Setup(x => x.AlertAfterThisManyFailedPings).Returns(2);
+        var consoleHandler = new SilentConsoleHandler(config.Object);
+
+        // Fail once (below threshold)
+        consoleHandler.NotifyPingResult(new PingStats { Success = false });
+
+        // Success resets
+        consoleHandler.NotifyPingResult(new PingStats { Success = true });
+
+        // Fail once more - still below threshold since reset
+        consoleHandler.NotifyPingResult(new PingStats { Success = false });
+
+        consoleHandler.BeepCount.Should().Be(0);
+    }
+
+    [Fact]
+    public void NotifyPingResult_AfterReset_CanReachThresholdAgain()
+    {
+        var config = new Mock<IPingConfig>();
+        config.Setup(x => x.AlertAfterThisManyFailedPings).Returns(2);
+        var consoleHandler = new SilentConsoleHandler(config.Object);
+
+        // First cluster hits threshold
+        consoleHandler.NotifyPingResult(new PingStats { Success = false });
+        consoleHandler.NotifyPingResult(new PingStats { Success = false });
+        consoleHandler.BeepCount.Should().Be(1);
+
+        // Reset
+        consoleHandler.NotifyPingResult(new PingStats { Success = true });
+
+        // Second cluster hits threshold
+        consoleHandler.NotifyPingResult(new PingStats { Success = false });
+        consoleHandler.NotifyPingResult(new PingStats { Success = false });
+        consoleHandler.BeepCount.Should().Be(2);
     }
 
     private static IPingConfig GetPingConfigMock()
     {
         return new Mock<IPingConfig>().Object;
+    }
+
+    private class SilentConsoleHandler : ConsoleHandler
+    {
+        public int BeepCount { get; private set; }
+        public SilentConsoleHandler(IPingConfig pingConfig) : base(pingConfig) { }
+        public override void Beep() { BeepCount++; }
     }
 }

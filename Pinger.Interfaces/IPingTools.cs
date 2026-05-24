@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
-
-namespace Pinger.Interfaces;
+﻿namespace Pinger.Interfaces;
 
 public interface IPingTools
 {
-    string CalculateElapsedTime(Stopwatch sw);
+    string FormatElapsedTime(TimeSpan elapsed);
     long CalculateWorkDayPings(int snoozeTime, int workingHours);
 }

@@ -2,12 +2,13 @@
 
 public interface IRollingStatistics
 {
-    long Longest { get; set; }
-    long Shortest { get; set; }
-    long TotalTime { get; set; }
-    long TotalPings { get; set; }
-    long FailedPings { get; set; }
-    long SuccessfulPings { get; set; }
+    long Longest { get; }
+    long Shortest { get; }
+    long TotalTime { get; }
+    long TotalPings { get; }
+    long FailedPings { get; }
+    long SuccessfulPings { get; }
     long StopAfterThisManyPings { get; set; }
-    decimal AvgTime { get; set; }
+    decimal AvgTime { get; }
+    decimal RecordPing(IPingStats status);
 }

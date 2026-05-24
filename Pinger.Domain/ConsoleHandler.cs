@@ -5,7 +5,8 @@ namespace Pinger.Domain;
 
 public class ConsoleHandler : IConsoleHandler
 {
-    private IPingConfig PingConfig { get; set; }
+    private IPingConfig PingConfig { get; }
+    private long _failedPingsInCluster;
 
     public ConsoleHandler(IPingConfig pingConfig)
     {
@@ -23,22 +24,24 @@ public class ConsoleHandler : IConsoleHandler
         set => ForegroundColor = value;
     }
 
-    public long AudioCue(IPingStats status, long failedPingsInCluster)
+    public virtual void Beep()
     {
-        var beepAfter = PingConfig.AlertAfterThisManyFailedPings;
+        System.Console.Beep();
+    }
 
+    public void NotifyPingResult(IPingStats status)
+    {
         if (status.Success)
         {
-            return 0;
+            _failedPingsInCluster = 0;
+            return;
         }
 
-        failedPingsInCluster++;
+        _failedPingsInCluster++;
 
-        if (failedPingsInCluster >= beepAfter)
+        if (_failedPingsInCluster >= PingConfig.AlertAfterThisManyFailedPings)
         {
             Beep();
         }
-
-        return failedPingsInCluster;
     }
 }

@@ -2,12 +2,12 @@
 
 public interface IPingConfig
 {
-    int Timeout { get; set; }
-    int SnoozeTime { get; set; }
-    int WorkingHours { get; set; }
-    int AlertAfterThisManyFailedPings { get; set; }
-    bool PingerIsActive { get; set; }
-    string Data { get; set; }
-    string CodeName { get; set; }
-    string RemoteServer { get; set; }
+    int Timeout { get; }
+    int SnoozeTime { get; }
+    int WorkingHours { get; }
+    int AlertAfterThisManyFailedPings { get; }
+    bool PingerIsActive { get; }
+    string Data { get; }
+    string CodeName { get; }
+    string RemoteServer { get; }
 }

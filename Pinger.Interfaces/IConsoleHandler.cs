@@ -3,6 +3,7 @@
 public interface IConsoleHandler
 {
     void WriteToConsole(string message);
+    void Beep();
     ConsoleColor ForegroundColour { get; set; }
-    long AudioCue(IPingStats status, long failedPingsInCluster);
+    void NotifyPingResult(IPingStats status);
 }

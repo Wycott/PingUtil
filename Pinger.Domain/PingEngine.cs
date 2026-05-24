@@ -7,7 +7,7 @@ namespace Pinger.Domain;
 
 public class PingEngine : IPingEngine
 {
-    private IPingTools PingToolKit { get; }
+    private IPingTools PingTools { get; }
     private IPingDisplay PingDisplay { get; }
     private IConsoleHandler ConsoleHandler { get; }
     private IPingConfig PingConfig { get; }
@@ -15,7 +15,7 @@ public class PingEngine : IPingEngine
 
     public PingEngine(IPingTools pingTools, IPingDisplay pingDisplay, IConsoleHandler consoleHandler, IPingConfig pingConfig, IRollingStatistics rollingStatistics)
     {
-        PingToolKit = pingTools;
+        PingTools = pingTools;
         PingDisplay = pingDisplay;
         ConsoleHandler = consoleHandler;
         PingConfig = pingConfig;
@@ -24,78 +24,51 @@ public class PingEngine : IPingEngine
 
     public void Start()
     {
-        var usual = Console.ForegroundColor;
+        using var cts = new CancellationTokenSource();
+        Console.CancelKeyPress += (_, e) =>
+        {
+            e.Cancel = true;
+            cts.Cancel();
+        };
 
-        long failedPingsInCluster = 0;
+        StartAsync(cts.Token).GetAwaiter().GetResult();
+    }
+
+    private async Task StartAsync(CancellationToken cancellationToken)
+    {
+        var usual = Console.ForegroundColor;
 
         var buffer = Encoding.ASCII.GetBytes(PingConfig.Data);
 
-        RollingStatistics.StopAfterThisManyPings = PingToolKit.CalculateWorkDayPings(PingConfig.SnoozeTime, PingConfig.WorkingHours);
+        RollingStatistics.StopAfterThisManyPings = PingTools.CalculateWorkDayPings(PingConfig.SnoozeTime, PingConfig.WorkingHours);
 
         PingDisplay.DisplaySettings(PingConfig.RemoteServer, PingConfig.Timeout, buffer, PingConfig.SnoozeTime, usual, RollingStatistics.StopAfterThisManyPings);
 
         var sw = Stopwatch.StartNew();
 
-        while (RollingStatistics.TotalPings < RollingStatistics.StopAfterThisManyPings)
+        while (RollingStatistics.TotalPings < RollingStatistics.StopAfterThisManyPings && !cancellationToken.IsCancellationRequested)
         {
-            failedPingsInCluster = PerformPingUpdateAndDisplayStatistics(buffer, failedPingsInCluster, sw, usual);
+            PerformPingUpdateAndDisplayStatistics(buffer, sw, usual);
+
+            try
+            {
+                await Task.Delay(PingConfig.SnoozeTime, cancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+                break;
+            }
         }
     }
 
-    private long PerformPingUpdateAndDisplayStatistics(byte[] buffer, long failedPingsInCluster, Stopwatch sw,
-        ConsoleColor usual)
+    private void PerformPingUpdateAndDisplayStatistics(byte[] buffer, Stopwatch sw, ConsoleColor usual)
     {
         var status = PingHost(PingConfig.RemoteServer, PingConfig.Timeout, buffer);
-        var successRate = UpdatePingStats(status, RollingStatistics);
-        PingDisplay.SetDisplayColour(status, RollingStatistics.AvgTime);
-        failedPingsInCluster = ConsoleHandler.AudioCue(status, failedPingsInCluster);
-        var elapsed = PingToolKit.CalculateElapsedTime(sw);
+        var successRate = RollingStatistics.RecordPing(status);
+        PingDisplay.SetDisplayColour(status, RollingStatistics.AvgTime, usual);
+        ConsoleHandler.NotifyPingResult(status);
+        var elapsed = PingTools.FormatElapsedTime(sw.Elapsed);
         PingDisplay.DisplayStatistics(successRate, status, elapsed, usual, RollingStatistics);
-        Thread.Sleep(PingConfig.SnoozeTime);
-
-        return failedPingsInCluster;
-    }
-
-    private static decimal UpdatePingStats(PingStats status, IRollingStatistics rollingStatistics)
-    {
-        rollingStatistics.TotalPings++;
-
-        UpdatePassFailStats(status, rollingStatistics);
-
-        if (status.Success)
-        {
-            UpdateGeneralStats(status, rollingStatistics);
-        }
-
-        return Math.Round(rollingStatistics.SuccessfulPings / (decimal)rollingStatistics.TotalPings * 100, 1);
-    }
-
-    private static void UpdateGeneralStats(PingStats status, IRollingStatistics rollingStatistics)
-    {
-        rollingStatistics.TotalTime += status.PingTime;
-        rollingStatistics.AvgTime = Math.Round(rollingStatistics.TotalTime / (decimal)rollingStatistics.SuccessfulPings, 1);
-
-        if (status.PingTime > rollingStatistics.Longest)
-        {
-            rollingStatistics.Longest = status.PingTime;
-        }
-
-        if (status.PingTime < rollingStatistics.Shortest)
-        {
-            rollingStatistics.Shortest = status.PingTime;
-        }
-    }
-
-    private static void UpdatePassFailStats(PingStats status, IRollingStatistics rollingStatistics)
-    {
-        if (status.Success)
-        {
-            rollingStatistics.SuccessfulPings++;
-        }
-        else
-        {
-            rollingStatistics.FailedPings++;
-        }
     }
 
     private PingStats PingHost(string nameOrAddress, int timeout, byte[] buffer)

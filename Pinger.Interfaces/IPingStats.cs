@@ -2,6 +2,6 @@
 
 public interface IPingStats
 {
-    bool Success { get; set; }
-    long PingTime { get; set; }
+    bool Success { get; }
+    long PingTime { get; }
 }

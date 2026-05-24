@@ -1,57 +1,89 @@
-using AiAnnotations;
-using AiAnnotations.Types;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Pinger.Domain;
 
 namespace Pinger.Test;
 
-[AiGenerated(Authorship.Hybrid)]
 public class PingConfigTest
 {
     [Fact]
-    public void WhenSetup_ThenItShouldBeAsExpected()
+    public void DefaultValues_AreCorrect()
     {
-        // Arrange
-        const string expectedData = "When all else fails";
-        const string expectedRemoteServer = "127.0.0.1";
-        const int expectedSnoozeTime = 3000;
-        const int expectedTimeout = 5000;
-        const int expectedWorkingHours = 4;
-        const bool expectedActiveFlag = false;
+        var config = new PingConfig();
 
-        // Act
-        var pingConfig = new PingConfig()
+        config.RemoteServer.Should().Be("8.8.8.8");
+        config.Timeout.Should().Be(10000);
+        config.SnoozeTime.Should().Be(5000);
+        config.WorkingHours.Should().Be(16);
+        config.AlertAfterThisManyFailedPings.Should().Be(5);
+        config.PingerIsActive.Should().BeTrue();
+        config.Data.Should().Be("abcdefghijklmnopqrstuvwxyz012345");
+        config.CodeName.Should().Be("Oh Well");
+    }
+
+    [Fact]
+    public void Properties_AreSettable()
+    {
+        var config = new PingConfig
         {
-            Data = expectedData,
-            RemoteServer = expectedRemoteServer,
-            PingerIsActive = expectedActiveFlag,
-            SnoozeTime = expectedSnoozeTime,
-            Timeout = expectedTimeout,
-            WorkingHours = expectedWorkingHours
+            Data = "custom data",
+            RemoteServer = "127.0.0.1",
+            PingerIsActive = false,
+            SnoozeTime = 3000,
+            Timeout = 5000,
+            WorkingHours = 4,
+            AlertAfterThisManyFailedPings = 10,
+            CodeName = "Test Name"
         };
 
-        // Assert
-        pingConfig.Data.Should().Be(expectedData);
-        pingConfig.RemoteServer.Should().Be(expectedRemoteServer);
-        pingConfig.SnoozeTime.Should().Be(expectedSnoozeTime);
-        pingConfig.Timeout.Should().Be(expectedTimeout);
-        pingConfig.WorkingHours.Should().Be(expectedWorkingHours);
-        pingConfig.PingerIsActive.Should().Be(expectedActiveFlag);
+        config.Data.Should().Be("custom data");
+        config.RemoteServer.Should().Be("127.0.0.1");
+        config.SnoozeTime.Should().Be(3000);
+        config.Timeout.Should().Be(5000);
+        config.WorkingHours.Should().Be(4);
+        config.PingerIsActive.Should().BeFalse();
+        config.AlertAfterThisManyFailedPings.Should().Be(10);
+        config.CodeName.Should().Be("Test Name");
     }
 
     [Fact]
-    public void AlertAfterThisManyFailedPings_ShouldBeSettable()
+    public void Constructor_WithConfiguration_BindsValues()
     {
-        var pingConfig = new PingConfig { AlertAfterThisManyFailedPings = 10 };
+        var inMemorySettings = new Dictionary<string, string?>
+        {
+            { "PingSettings:RemoteServer", "1.1.1.1" },
+            { "PingSettings:Timeout", "2000" },
+            { "PingSettings:SnoozeTime", "1000" },
+            { "PingSettings:WorkingHours", "8" },
+            { "PingSettings:PingerIsActive", "false" },
+            { "PingSettings:CodeName", "Loaded" }
+        };
 
-        pingConfig.AlertAfterThisManyFailedPings.Should().Be(10);
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        var config = new PingConfig(configuration);
+
+        config.RemoteServer.Should().Be("1.1.1.1");
+        config.Timeout.Should().Be(2000);
+        config.SnoozeTime.Should().Be(1000);
+        config.WorkingHours.Should().Be(8);
+        config.PingerIsActive.Should().BeFalse();
+        config.CodeName.Should().Be("Loaded");
     }
 
     [Fact]
-    public void CodeName_ShouldBeSettable()
+    public void Constructor_WithEmptyConfiguration_UsesDefaults()
     {
-        var pingConfig = new PingConfig { CodeName = "Test Name" };
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>())
+            .Build();
 
-        pingConfig.CodeName.Should().Be("Test Name");
+        var config = new PingConfig(configuration);
+
+        config.RemoteServer.Should().Be("8.8.8.8");
+        config.Timeout.Should().Be(10000);
+        config.SnoozeTime.Should().Be(5000);
     }
 }
