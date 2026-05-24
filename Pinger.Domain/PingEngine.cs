@@ -52,7 +52,7 @@ public class PingEngine : IPingEngine
 
         RollingStatistics.StopAfterThisManyPings = PingTools.CalculateWorkDayPings(PingConfig.SnoozeTime, PingConfig.WorkingHours);
 
-        PingDisplay.DisplaySettings(PingConfig.RemoteServer, PingConfig.Timeout, buffer, PingConfig.SnoozeTime, usual, RollingStatistics.StopAfterThisManyPings);
+        PingDisplay.DisplaySettings(PingConfig.RemoteServer, PingConfig.Timeout, buffer, usual, RollingStatistics.StopAfterThisManyPings);
 
         var sw = Stopwatch.StartNew();
 

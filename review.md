@@ -61,7 +61,7 @@
 
 The codebase is in good shape. A few remaining observations, all low priority:
 
-- [ ] 31. `ServiceProvider` is not disposed — `Program.Main()` creates a `ServiceProvider` but never disposes it. For a short-lived console app this is harmless, but wrapping it in `using` would be correct.
-- [ ] 32. `CalculateWorkDayPings` doesn't validate `workingHours` — a zero or negative value returns 0 pings, which means the loop never executes. Not a crash, but a silent no-op that could confuse users.
-- [ ] 33. `PingConfig.Data` could be empty from config — if someone sets `"Data": ""` in appsettings.json, `Encoding.ASCII.GetBytes("")` produces a zero-length buffer. The ICMP send may behave unexpectedly with no payload. A minimum-length guard would be defensive.
-- [ ] 34. `DisplaySettings` still accepts `snoozeTime` as a parameter despite `PingDisplay` already having it — the value is passed from `PingEngine` but `PingDisplay` captured it in the constructor. Minor redundancy in the interface signature.
+- [x] 31. `ServiceProvider` is not disposed — wrapped in `using` in `Main()`.
+- [x] 32. `CalculateWorkDayPings` doesn't validate `workingHours` — added `ArgumentOutOfRangeException` guard for zero/negative values.
+- [x] 33. `PingConfig.Data` could be empty from config — added fallback to default payload if bound value is null or empty.
+- [x] 34. `DisplaySettings` still accepts `snoozeTime` as a parameter despite `PingDisplay` already having it — removed the redundant parameter; `PingDisplay` now uses its own `SnoozeTime` field.

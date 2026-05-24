@@ -109,7 +109,7 @@ public class PingDisplayTest
         var mockPingConfig = GetMockPingConfig();
         IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
 
-        pingDisplay.DisplaySettings("8.8.8.8", 10000, Encoding.ASCII.GetBytes("test"), 5000, ConsoleColor.Gray, 100);
+        pingDisplay.DisplaySettings("8.8.8.8", 10000, Encoding.ASCII.GetBytes("test"), ConsoleColor.Gray, 100);
 
         mockConsole.VerifySet(x => x.ForegroundColour = ConsoleColor.Yellow, Times.Once);
     }
@@ -122,7 +122,7 @@ public class PingDisplayTest
         mockPingConfig.Setup(x => x.CodeName).Returns("TestCode");
         IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
 
-        pingDisplay.DisplaySettings("8.8.8.8", 10000, Encoding.ASCII.GetBytes("test"), 5000, ConsoleColor.Gray, 100);
+        pingDisplay.DisplaySettings("8.8.8.8", 10000, Encoding.ASCII.GetBytes("test"), ConsoleColor.Gray, 100);
 
         mockConsole.Verify(x => x.WriteToConsole(It.Is<string>(s => s.Contains("8.8.8.8"))), Times.Once);
         mockConsole.Verify(x => x.WriteToConsole(It.Is<string>(s => s.Contains("TestCode"))), Times.Once);
@@ -135,7 +135,7 @@ public class PingDisplayTest
         var mockPingConfig = GetMockPingConfig();
         IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
 
-        pingDisplay.DisplaySettings("8.8.8.8", 10000, Encoding.ASCII.GetBytes("test"), 5000, ConsoleColor.Cyan, 100);
+        pingDisplay.DisplaySettings("8.8.8.8", 10000, Encoding.ASCII.GetBytes("test"), ConsoleColor.Cyan, 100);
 
         mockConsole.VerifySet(x => x.ForegroundColour = ConsoleColor.Cyan, Times.Once);
     }

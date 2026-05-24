@@ -25,5 +25,10 @@ public class PingConfig : IPingConfig
         {
             section.Bind(this);
         }
+
+        if (string.IsNullOrEmpty(Data))
+        {
+            Data = "abcdefghijklmnopqrstuvwxyz012345";
+        }
     }
 }

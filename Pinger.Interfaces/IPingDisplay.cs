@@ -7,7 +7,7 @@ public interface IPingDisplay
 
     void SetDisplayColour(IPingStats status, decimal avgTime, ConsoleColor usual);
 
-    void DisplaySettings(string remoteServer, int timeout, byte[] buffer, int snoozeTime, ConsoleColor usual,
+    void DisplaySettings(string remoteServer, int timeout, byte[] buffer, ConsoleColor usual,
         long stopAfterThisManyPings);
 
     void DisplaySummary(string elapsed, ConsoleColor usual, IRollingStatistics rollingStatistics);

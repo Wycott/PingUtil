@@ -24,7 +24,7 @@ public class PingEngineTest
         engine.Start();
 
         mockPingDisplay.Verify(x => x.DisplaySettings(It.IsAny<string>(), It.IsAny<int>(),
-            It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<ConsoleColor>(), It.IsAny<long>()), Times.Once);
+            It.IsAny<byte[]>(), It.IsAny<ConsoleColor>(), It.IsAny<long>()), Times.Once);
     }
 
     [Fact]

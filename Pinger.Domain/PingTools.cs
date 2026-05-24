@@ -11,6 +11,11 @@ public class PingTools : IPingTools
             throw new ArgumentOutOfRangeException(nameof(snoozeTime), "Snooze time must be greater than zero.");
         }
 
+        if (workingHours <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(workingHours), "Working hours must be greater than zero.");
+        }
+
         const int millisecondsInHour = 3_600_000;
 
         var totalMilliseconds = (long)workingHours * millisecondsInHour;

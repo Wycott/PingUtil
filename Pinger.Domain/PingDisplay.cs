@@ -62,11 +62,11 @@ public class PingDisplay : IPingDisplay
         }
     }
 
-    public void DisplaySettings(string remoteServer, int timeout, byte[] buffer, int snoozeTime, ConsoleColor usual, long stopAfterThisManyPings)
+    public void DisplaySettings(string remoteServer, int timeout, byte[] buffer, ConsoleColor usual, long stopAfterThisManyPings)
     {
         ConsoleHandler.ForegroundColour = ConsoleColor.Yellow;
         ConsoleHandler.WriteToConsole(
-            $"Host: {remoteServer}, Timeout: {timeout}, Packet Size: {buffer.Length}, Snooze Time: {snoozeTime}, Data Points: {stopAfterThisManyPings}");
+            $"Host: {remoteServer}, Timeout: {timeout}, Packet Size: {buffer.Length}, Snooze Time: {SnoozeTime}, Data Points: {stopAfterThisManyPings}");
         DisplayCodeName();
         ConsoleHandler.ForegroundColour = usual;
     }

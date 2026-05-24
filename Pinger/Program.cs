@@ -11,7 +11,7 @@ public static class Program
     [ExcludeFromCodeCoverage]
     public static void Main()
     {
-        var serviceProvider = ConfigureServices();
+        using var serviceProvider = ConfigureServices();
         var engine = serviceProvider.GetRequiredService<IPingEngine>();
         StartWork(engine);
     }
