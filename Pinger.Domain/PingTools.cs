@@ -6,15 +6,16 @@ public class PingTools : IPingTools
 {
     public long CalculateWorkDayPings(int snoozeTime, int workingHours)
     {
-        const int millisecondsInSecond = 1000;
-        const int minutesInHour = 60;
-        const int secondsInMinute = 60;
+        if (snoozeTime <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(snoozeTime), "Snooze time must be greater than zero.");
+        }
 
-        var snoozeTimeInSeconds = snoozeTime / millisecondsInSecond;
+        const int millisecondsInHour = 3_600_000;
 
-        var pingsInADay = workingHours * minutesInHour * secondsInMinute / snoozeTimeInSeconds;
+        var totalMilliseconds = (long)workingHours * millisecondsInHour;
 
-        return pingsInADay;
+        return totalMilliseconds / snoozeTime;
     }
 
     public string FormatElapsedTime(TimeSpan elapsed)

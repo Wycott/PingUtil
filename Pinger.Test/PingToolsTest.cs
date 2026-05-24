@@ -27,14 +27,34 @@ public class PingToolsTest
     }
 
     [Fact]
-    public void CalculateWorkDayPings_SmallSnoozeTime()
+    public void CalculateWorkDayPings_SubSecondSnooze()
     {
         IPingTools pingTools = new PingTools();
 
-        // 2000ms snooze, 1 hour = 1800 pings
-        var result = pingTools.CalculateWorkDayPings(2000, 1);
+        // 500ms snooze, 1 hour = 7200 pings
+        var result = pingTools.CalculateWorkDayPings(500, 1);
 
-        result.Should().Be(1800);
+        result.Should().Be(7200);
+    }
+
+    [Fact]
+    public void CalculateWorkDayPings_ZeroSnooze_ThrowsArgumentOutOfRange()
+    {
+        IPingTools pingTools = new PingTools();
+
+        var act = () => pingTools.CalculateWorkDayPings(0, 1);
+
+        act.Should().Throw<ArgumentOutOfRangeException>();
+    }
+
+    [Fact]
+    public void CalculateWorkDayPings_NegativeSnooze_ThrowsArgumentOutOfRange()
+    {
+        IPingTools pingTools = new PingTools();
+
+        var act = () => pingTools.CalculateWorkDayPings(-1000, 1);
+
+        act.Should().Throw<ArgumentOutOfRangeException>();
     }
 
     [Fact]

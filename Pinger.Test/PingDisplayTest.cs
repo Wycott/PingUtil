@@ -140,6 +140,76 @@ public class PingDisplayTest
         mockConsole.VerifySet(x => x.ForegroundColour = ConsoleColor.Cyan, Times.Once);
     }
 
+    [Fact]
+    public void DisplayStatistics_ShowsZeroForShortestWhenNoSuccessfulPings()
+    {
+        var mockConsole = GetMockConsoleHandler();
+        var mockPingConfig = GetMockPingConfig();
+        var mockRollingStatistics = new Mock<IRollingStatistics>();
+        mockRollingStatistics.Setup(x => x.Shortest).Returns(long.MaxValue);
+
+        IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
+
+        pingDisplay.DisplayStatistics(0m, new PingStats(), "00:00:00", ConsoleColor.Gray, mockRollingStatistics.Object);
+
+        mockConsole.Verify(x => x.WriteToConsole(It.Is<string>(s => s.Contains("Short:0ms"))));
+    }
+
+    [Fact]
+    public void DisplayStatistics_ShowsActualShortestWhenPingsRecorded()
+    {
+        var mockConsole = GetMockConsoleHandler();
+        var mockPingConfig = GetMockPingConfig();
+        var mockRollingStatistics = new Mock<IRollingStatistics>();
+        mockRollingStatistics.Setup(x => x.Shortest).Returns(12);
+
+        IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
+
+        pingDisplay.DisplayStatistics(100m, new PingStats { Success = true, PingTime = 12 }, "00:00:05", ConsoleColor.Gray, mockRollingStatistics.Object);
+
+        mockConsole.Verify(x => x.WriteToConsole(It.Is<string>(s => s.Contains("Short:12ms"))));
+    }
+
+    [Fact]
+    public void DisplaySummary_WritesToConsole()
+    {
+        var mockConsole = GetMockConsoleHandler();
+        var mockPingConfig = GetMockPingConfig();
+        var mockRollingStatistics = new Mock<IRollingStatistics>();
+        mockRollingStatistics.Setup(x => x.TotalPings).Returns(100);
+        mockRollingStatistics.Setup(x => x.SuccessfulPings).Returns(95);
+        mockRollingStatistics.Setup(x => x.FailedPings).Returns(5);
+        mockRollingStatistics.Setup(x => x.AvgTime).Returns(15.2m);
+        mockRollingStatistics.Setup(x => x.Shortest).Returns(8);
+        mockRollingStatistics.Setup(x => x.Longest).Returns(42);
+
+        IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
+
+        pingDisplay.DisplaySummary("01:00:00", ConsoleColor.Gray, mockRollingStatistics.Object);
+
+        mockConsole.Verify(x => x.WriteToConsole(It.Is<string>(s =>
+            s.Contains("Session complete") &&
+            s.Contains("Total:100") &&
+            s.Contains("Pass:95") &&
+            s.Contains("Fail:5") &&
+            s.Contains("Duration:01:00:00"))));
+    }
+
+    [Fact]
+    public void DisplaySummary_SetsYellowThenResetsToUsual()
+    {
+        var mockConsole = GetMockConsoleHandler();
+        var mockPingConfig = GetMockPingConfig();
+        var mockRollingStatistics = GetMockRollingStatistics();
+
+        IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
+
+        pingDisplay.DisplaySummary("00:00:00", ConsoleColor.Cyan, mockRollingStatistics.Object);
+
+        mockConsole.VerifySet(x => x.ForegroundColour = ConsoleColor.Yellow, Times.Once);
+        mockConsole.VerifySet(x => x.ForegroundColour = ConsoleColor.Cyan, Times.Once);
+    }
+
     private static Mock<IConsoleHandler> GetMockConsoleHandler()
     {
         return new Mock<IConsoleHandler>();

@@ -25,13 +25,23 @@ public class PingEngine : IPingEngine
     public void Start()
     {
         using var cts = new CancellationTokenSource();
-        Console.CancelKeyPress += (_, e) =>
+
+        ConsoleCancelEventHandler cancelHandler = (_, e) =>
         {
             e.Cancel = true;
             cts.Cancel();
         };
 
-        StartAsync(cts.Token).GetAwaiter().GetResult();
+        Console.CancelKeyPress += cancelHandler;
+
+        try
+        {
+            StartAsync(cts.Token).GetAwaiter().GetResult();
+        }
+        finally
+        {
+            Console.CancelKeyPress -= cancelHandler;
+        }
     }
 
     private async Task StartAsync(CancellationToken cancellationToken)
@@ -59,6 +69,8 @@ public class PingEngine : IPingEngine
                 break;
             }
         }
+
+        PingDisplay.DisplaySummary(PingTools.FormatElapsedTime(sw.Elapsed), usual, RollingStatistics);
     }
 
     private void PerformPingUpdateAndDisplayStatistics(byte[] buffer, Stopwatch sw, ConsoleColor usual)
@@ -88,9 +100,9 @@ public class PingEngine : IPingEngine
                 PingTime = reply.RoundtripTime
             };
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // Treat any ping failure as a failed ping
+            ConsoleHandler.WriteToConsole($"[Ping error: {ex.GetType().Name} - {ex.Message}]");
             return new PingStats();
         }
     }

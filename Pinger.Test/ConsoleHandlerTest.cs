@@ -128,6 +128,6 @@ public class ConsoleHandlerTest
     {
         public int BeepCount { get; private set; }
         public SilentConsoleHandler(IPingConfig pingConfig) : base(pingConfig) { }
-        public override void Beep() { BeepCount++; }
+        protected override void Beep() { BeepCount++; }
     }
 }

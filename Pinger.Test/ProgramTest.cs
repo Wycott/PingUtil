@@ -1,24 +1,12 @@
-using AiAnnotations;
-using AiAnnotations.Types;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Pinger.Interfaces;
 
 namespace Pinger.Test;
 
-[AiGenerated(Authorship.Hybrid)]
 public class ProgramTest
 {
-    [Fact]
-    public void WhenInvoked_ThenSuccess()
-    {
-        // Arrange
-        var engine = new Mock<IPingEngine>();
-
-        // Act/Assert
-        Program.StartWork(engine.Object);
-    }
-
     [Fact]
     public void StartWork_CallsEngineStart()
     {
@@ -27,5 +15,15 @@ public class ProgramTest
         Program.StartWork(engine.Object);
 
         engine.Verify(x => x.Start(), Times.Once);
+    }
+
+    [Fact]
+    public void ConfigureServices_ResolvesIPingEngine()
+    {
+        var serviceProvider = Program.ConfigureServices();
+
+        var engine = serviceProvider.GetService<IPingEngine>();
+
+        engine.Should().NotBeNull();
     }
 }

@@ -9,4 +9,6 @@ public interface IPingDisplay
 
     void DisplaySettings(string remoteServer, int timeout, byte[] buffer, int snoozeTime, ConsoleColor usual,
         long stopAfterThisManyPings);
+
+    void DisplaySummary(string elapsed, ConsoleColor usual, IRollingStatistics rollingStatistics);
 }

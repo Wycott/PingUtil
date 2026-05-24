@@ -1,47 +1,39 @@
 using System.Diagnostics.CodeAnalysis;
-using AiAnnotations;
-using AiAnnotations.Types;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Pinger.Domain;
 using Pinger.Interfaces;
-using SimpleInjector;
 
 namespace Pinger;
 
-[AiGenerated(Authorship.Hybrid)]
 public static class Program
 {
     [ExcludeFromCodeCoverage]
-    private static Container? Container { get; set; }
-
-    [ExcludeFromCodeCoverage]
     public static void Main()
     {
-        Container = ConfigureContainer();
-        var engine = Container.GetInstance<IPingEngine>();
+        var serviceProvider = ConfigureServices();
+        var engine = serviceProvider.GetRequiredService<IPingEngine>();
         StartWork(engine);
     }
 
-    private static Container ConfigureContainer()
+    public static ServiceProvider ConfigureServices()
     {
         var configuration = new ConfigurationBuilder()
             .SetBasePath(AppContext.BaseDirectory)
             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
             .Build();
 
-        var container = new Container();
+        var services = new ServiceCollection();
 
-        container.RegisterInstance<IConfiguration>(configuration);
-        container.Register<IPingEngine, PingEngine>();
-        container.Register<IPingTools, PingTools>();
-        container.Register<IPingDisplay, PingDisplay>();
-        container.Register<IConsoleHandler, ConsoleHandler>();
-        container.Register<IPingConfig>(() => new PingConfig(configuration));
-        container.Register<IRollingStatistics, RollingStatistics>();
+        services.AddSingleton<IConfiguration>(configuration);
+        services.AddTransient<IPingEngine, PingEngine>();
+        services.AddTransient<IPingTools, PingTools>();
+        services.AddTransient<IPingDisplay, PingDisplay>();
+        services.AddTransient<IConsoleHandler, ConsoleHandler>();
+        services.AddSingleton<IPingConfig>(new PingConfig(configuration));
+        services.AddSingleton<IRollingStatistics, RollingStatistics>();
 
-        container.Verify();
-
-        return container;
+        return services.BuildServiceProvider();
     }
 
     public static void StartWork(IPingEngine engine)

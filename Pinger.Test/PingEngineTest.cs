@@ -90,7 +90,7 @@ public class PingEngineTest
 
         engine.Start();
 
-        mockPingTools.Verify(x => x.FormatElapsedTime(It.IsAny<TimeSpan>()), Times.Once);
+        mockPingTools.Verify(x => x.FormatElapsedTime(It.IsAny<TimeSpan>()), Times.AtLeastOnce);
     }
 
     private static IPingEngine CreateEngine(

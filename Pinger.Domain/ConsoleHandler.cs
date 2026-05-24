@@ -24,7 +24,7 @@ public class ConsoleHandler : IConsoleHandler
         set => ForegroundColor = value;
     }
 
-    public virtual void Beep()
+    protected virtual void Beep()
     {
         System.Console.Beep();
     }
