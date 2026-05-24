@@ -11,5 +11,5 @@ public class RollingStatistics : IRollingStatistics
     public long TotalTime { get; set; }
     public decimal AvgTime { get; set; }
     public long Longest { get; set; }
-    public long Shortest { get; set; }
+    public long Shortest { get; set; } = long.MaxValue;
 }

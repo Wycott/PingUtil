@@ -2,7 +2,6 @@ using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Text;
 using Pinger.Interfaces;
-using static System.Console;
 
 namespace Pinger.Domain;
 
@@ -25,7 +24,7 @@ public class PingEngine : IPingEngine
 
     public void Start()
     {
-        var usual = ForegroundColor;
+        var usual = Console.ForegroundColor;
 
         long failedPingsInCluster = 0;
 
@@ -106,28 +105,20 @@ public class PingEngine : IPingEngine
             return new PingStats() { Success = true };
         }
 
-        var pinger = new Ping();
-
         try
         {
+            using var pinger = new Ping();
             var reply = pinger.Send(nameOrAddress, timeout, buffer);
-            var pingStats = new PingStats
+            return new PingStats
             {
                 Success = reply.Status == IPStatus.Success,
                 PingTime = reply.RoundtripTime
             };
-
-            return pingStats;
         }
-        catch (PingException)
+        catch (Exception)
         {
-            // Don't care what type of failure it is
+            // Treat any ping failure as a failed ping
+            return new PingStats();
         }
-        finally
-        {
-            pinger.Dispose();
-        }
-
-        return new PingStats();
     }
 }

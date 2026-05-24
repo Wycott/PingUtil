@@ -15,8 +15,9 @@ public class PingDisplay : IPingDisplay
 
     public void DisplayStatistics(decimal successRate, IPingStats status, string elapsed, ConsoleColor usual, IRollingStatistics rollingStatistics)
     {
+        var remaining = rollingStatistics.StopAfterThisManyPings - rollingStatistics.TotalPings;
         ConsoleHandler.WriteToConsole(
-            $"{successRate}% R{status.PingTime}. T{rollingStatistics.TotalPings} P{rollingStatistics.SuccessfulPings} F{rollingStatistics.FailedPings}. A{rollingStatistics.AvgTime} S{rollingStatistics.Shortest} L{rollingStatistics.Longest} U{elapsed} C{rollingStatistics.StopAfterThisManyPings - rollingStatistics.TotalPings}");
+            $"{successRate}% Reply:{status.PingTime}ms Total:{rollingStatistics.TotalPings} Pass:{rollingStatistics.SuccessfulPings} Fail:{rollingStatistics.FailedPings} Avg:{rollingStatistics.AvgTime}ms Short:{rollingStatistics.Shortest}ms Long:{rollingStatistics.Longest}ms Up:{elapsed} Remaining:{remaining}");
         ConsoleHandler.ForegroundColour = usual;
     }
 
