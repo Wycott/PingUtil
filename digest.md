@@ -38,3 +38,14 @@ Pinger is a .NET 10 console application that continuously pings a remote server 
 | Weeks | 218 |
 | Months | 50 |
 | Years | 4 |
+
+## Commits by Year
+
+```mermaid
+pie title Commits by Year
+    "2022" : 38
+    "2023" : 70
+    "2024" : 12
+    "2025" : 12
+    "2026" : 18
+```
