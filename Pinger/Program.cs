@@ -20,6 +20,7 @@ public static class Program
 
     public static ServiceProvider ConfigureServices()
     {
+        // ReSharper disable once StringLiteralTypo
         const string configFile = "appsettings.json";
 
         var configuration = new ConfigurationBuilder()
