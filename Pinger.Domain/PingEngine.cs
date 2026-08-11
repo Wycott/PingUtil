@@ -26,7 +26,6 @@ public class PingEngine(
         ConsoleCancelEventHandler cancelHandler = (_, e) =>
         {
             e.Cancel = true;
-            cts.Cancel();
         };
 
         Console.CancelKeyPress += cancelHandler;
@@ -87,7 +86,7 @@ public class PingEngine(
     {
         if (!PingConfig.PingerIsActive)
         {
-            return new PingStats() { Success = true };
+            return new PingStats { Success = true };
         }
 
         try

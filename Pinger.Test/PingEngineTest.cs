@@ -114,17 +114,21 @@ public class PingEngineTest
         pingConfig.Setup(x => x.Data).Returns("test");
         pingConfig.Setup(x => x.PingerIsActive).Returns(false);
 
-        if (rollingStatistics == null)
+        switch (rollingStatistics)
         {
-            rollingStatistics = new Mock<IRollingStatistics>();
+            case null:
+            {
+                rollingStatistics = new Mock<IRollingStatistics>();
 
-            var count = 0L;
+                var count = 0L;
 
-            rollingStatistics.Setup(x => x.TotalPings).Returns(() => count);
-            rollingStatistics.Setup(x => x.RecordPing(It.IsAny<IPingStats>()))
-                .Callback(() => count++)
-                .Returns(100m);
-            rollingStatistics.Setup(x => x.StopAfterThisManyPings).Returns(pingCount);
+                rollingStatistics.Setup(x => x.TotalPings).Returns(() => count);
+                rollingStatistics.Setup(x => x.RecordPing(It.IsAny<IPingStats>()))
+                    .Callback(() => count++)
+                    .Returns(100m);
+                rollingStatistics.Setup(x => x.StopAfterThisManyPings).Returns(pingCount);
+                break;
+            }
         }
 
         return new PingEngine(pingTools.Object, pingDisplay.Object,
