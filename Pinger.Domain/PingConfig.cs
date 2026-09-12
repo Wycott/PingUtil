@@ -12,7 +12,7 @@ public class PingConfig : IPingConfig
     public bool PingerIsActive { get; set; } = true;
     public int WorkingHours { get; set; } = 16;
     public int AlertAfterThisManyFailedPings { get; set; } = 5;
-    public string CodeName { get; set; } = "Oh Well";
+    public string CodeName { get; set; } = "Oh Well"; // Overridden by appsettings.json
 
     public PingConfig()
     {

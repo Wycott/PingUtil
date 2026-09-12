@@ -26,6 +26,7 @@ public class PingEngine(
         ConsoleCancelEventHandler cancelHandler = (_, e) =>
         {
             e.Cancel = true;
+            cts.Cancel();
         };
 
         Console.CancelKeyPress += cancelHandler;
