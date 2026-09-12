@@ -99,9 +99,11 @@ public class PingEngine(
                 PingTime = reply.RoundtripTime
             };
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            ConsoleHandler.WriteToConsole($"[Ping error: {ex.GetType().Name} - {ex.Message}]");
+            const string friendlyMessage = "[Ping failed: the host could not be reached or a network error occurred.]";
+            ConsoleHandler.WriteToConsole(friendlyMessage);
+
             return new PingStats();
         }
     }
