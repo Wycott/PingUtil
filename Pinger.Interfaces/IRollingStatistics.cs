@@ -11,5 +11,6 @@ public interface IRollingStatistics
     long SuccessfulPings { get; }
     long StopAfterThisManyPings { get; set; }
     decimal AvgTime { get; }
+    decimal RunningAvgTime { get; }
     decimal RecordPing(IPingStats status);
 }

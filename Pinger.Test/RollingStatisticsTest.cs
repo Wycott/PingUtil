@@ -101,6 +101,55 @@ public class RollingStatisticsTest
     }
 
     [Fact]
+    public void RunningAvgTime_WithNoFailures_MatchesAvgTime()
+    {
+        var stats = new RollingStatistics();
+
+        stats.RecordPing(new PingStats { Success = true, PingTime = 10 });
+        stats.RecordPing(new PingStats { Success = true, PingTime = 30 });
+
+        stats.RunningAvgTime.Should().Be(stats.AvgTime);
+        stats.RunningAvgTime.Should().Be(20);
+    }
+
+    [Fact]
+    public void RunningAvgTime_ResetsToZeroOnFailure()
+    {
+        var stats = new RollingStatistics();
+
+        stats.RecordPing(new PingStats { Success = true, PingTime = 20 });
+        stats.RecordPing(new PingStats { Success = false });
+
+        stats.RunningAvgTime.Should().Be(0);
+    }
+
+    [Fact]
+    public void RunningAvgTime_AveragesOnlyPingsSinceLastFailure()
+    {
+        var stats = new RollingStatistics();
+
+        stats.RecordPing(new PingStats { Success = true, PingTime = 100 });
+        stats.RecordPing(new PingStats { Success = true, PingTime = 200 });
+        stats.RecordPing(new PingStats { Success = false });
+        stats.RecordPing(new PingStats { Success = true, PingTime = 10 });
+        stats.RecordPing(new PingStats { Success = true, PingTime = 30 });
+
+        // Ravg only reflects the two successes after the failure.
+        stats.RunningAvgTime.Should().Be(20);
+
+        // Overall Avg still reflects all four successful pings: (100+200+10+30)/4 = 85.
+        stats.AvgTime.Should().Be(85);
+    }
+
+    [Fact]
+    public void RunningAvgTime_DefaultsToZero()
+    {
+        var stats = new RollingStatistics();
+
+        stats.RunningAvgTime.Should().Be(0);
+    }
+
+    [Fact]
     public void Shortest_DefaultsToMaxValue()
     {
         var stats = new RollingStatistics();

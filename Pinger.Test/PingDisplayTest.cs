@@ -181,6 +181,23 @@ public class PingDisplayTest
     }
 
     [Fact]
+    public void DisplayStatistics_IncludesRunningAverageInOutput()
+    {
+        var mockConsole = GetMockConsoleHandler();
+        var mockPingConfig = GetMockPingConfig();
+        var mockRollingStatistics = new Mock<IRollingStatistics>();
+
+        mockRollingStatistics.Setup(x => x.AvgTime).Returns(17m);
+        mockRollingStatistics.Setup(x => x.RunningAvgTime).Returns(12m);
+
+        IPingDisplay pingDisplay = new PingDisplay(mockConsole.Object, mockPingConfig.Object);
+
+        pingDisplay.DisplayStatistics(100m, new PingStats { Success = true, PingTime = 12 }, "00:00:05", ConsoleColor.Gray, mockRollingStatistics.Object);
+
+        mockConsole.Verify(x => x.WriteToConsole(It.Is<string>(s => s.Contains("Avg:17ms") && s.Contains("Ravg:12ms"))));
+    }
+
+    [Fact]
     public void DisplaySummary_WritesToConsole()
     {
         var mockConsole = GetMockConsoleHandler();

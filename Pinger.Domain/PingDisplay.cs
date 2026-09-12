@@ -14,7 +14,7 @@ public class PingDisplay(IConsoleHandler consoleHandler, IPingConfig pingConfig)
         var estimatedEnd = CalculateCountdown(remaining);
         var shortest = FormatShortest(rollingStatistics.Shortest);
         ConsoleHandler.WriteToConsole(
-            $"{successRate}% Reply:{status.PingTime}ms Total:{rollingStatistics.TotalPings} Pass:{rollingStatistics.SuccessfulPings} Fail:{rollingStatistics.FailedPings} Avg:{rollingStatistics.AvgTime}ms Short:{shortest}ms Long:{rollingStatistics.Longest}ms Up:{elapsed} Remaining:{remaining} ({estimatedEnd})");
+            $"{successRate}% Reply:{status.PingTime}ms Total:{rollingStatistics.TotalPings} Pass:{rollingStatistics.SuccessfulPings} Fail:{rollingStatistics.FailedPings} Avg:{rollingStatistics.AvgTime}ms Ravg:{rollingStatistics.RunningAvgTime}ms Short:{shortest}ms Long:{rollingStatistics.Longest}ms Up:{elapsed} Remaining:{remaining} ({estimatedEnd})");
         ConsoleHandler.ForegroundColour = usual;
     }
 
@@ -24,7 +24,7 @@ public class PingDisplay(IConsoleHandler consoleHandler, IPingConfig pingConfig)
 
         ConsoleHandler.ForegroundColour = ConsoleColor.Yellow;
         ConsoleHandler.WriteToConsole(
-            $"--- Session complete. Total:{rollingStatistics.TotalPings} Pass:{rollingStatistics.SuccessfulPings} Fail:{rollingStatistics.FailedPings} Avg:{rollingStatistics.AvgTime}ms Short:{shortest}ms Long:{rollingStatistics.Longest}ms Duration:{elapsed} ---");
+            $"--- Session complete. Total:{rollingStatistics.TotalPings} Pass:{rollingStatistics.SuccessfulPings} Fail:{rollingStatistics.FailedPings} Avg:{rollingStatistics.AvgTime}ms Ravg:{rollingStatistics.RunningAvgTime}ms Short:{shortest}ms Long:{rollingStatistics.Longest}ms Duration:{elapsed} ---");
         ConsoleHandler.ForegroundColour = usual;
     }
 
