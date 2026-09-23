@@ -1,5 +1,5 @@
 name: .NET Build and Test
-
+  
 on:
   push:
     branches: [ main ]
@@ -10,6 +10,12 @@ env:
   SOLUTION_FILE: Pinger.sln
 
 jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show Ubuntu version
+        run: lsb_release -a
+
   restore:
     runs-on: ubuntu-latest
     steps:
