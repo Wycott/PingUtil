@@ -11,13 +11,13 @@ env:
 
 jobs:
   diagnostic:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Show Ubuntu version
         run: lsb_release -a
 
   restore:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: diagnostic
     steps:
       - uses: actions/checkout@v7
@@ -28,7 +28,7 @@ jobs:
         run: dotnet restore ${{ env.SOLUTION_FILE }}
 
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: restore
     steps:
       - uses: actions/checkout@v7
@@ -39,7 +39,7 @@ jobs:
         run: dotnet build ${{ env.SOLUTION_FILE }} --configuration Release
 
   semgrep:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: build
     steps:
       - uses: actions/checkout@v7
@@ -50,7 +50,7 @@ jobs:
           config: p/csharp            
 
   test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: build
     steps:
       - uses: actions/checkout@v7
