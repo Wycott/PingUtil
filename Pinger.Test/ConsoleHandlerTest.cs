@@ -118,6 +118,7 @@ public class ConsoleHandlerTest
         // First cluster hits threshold
         consoleHandler.NotifyPingResult(new PingStats { Success = false });
         consoleHandler.NotifyPingResult(new PingStats { Success = false });
+
         consoleHandler.BeepCount.Should().Be(1);
 
         // Reset
