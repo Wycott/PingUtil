@@ -95,6 +95,48 @@ public class PingEngineTest
         mockPingTools.Verify(x => x.FormatElapsedTime(It.IsAny<TimeSpan>()), Times.AtLeastOnce);
     }
 
+    [Fact]
+    public void Start_DoesNotSnoozeAfterTheLastPing()
+    {
+        var mockPingConfig = new Mock<IPingConfig>();
+        mockPingConfig.Setup(x => x.SnoozeTime).Returns(5000);
+
+        var engine = CreateEngine(pingConfig: mockPingConfig, pingCount: 1);
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+
+        engine.Start();
+
+        sw.Elapsed.Should().BeLessThan(TimeSpan.FromSeconds(2));
+    }
+
+    [Fact]
+    public void Start_SnoozesBetweenPings()
+    {
+        var mockPingConfig = new Mock<IPingConfig>();
+        mockPingConfig.Setup(x => x.SnoozeTime).Returns(300);
+
+        var engine = CreateEngine(pingConfig: mockPingConfig, pingCount: 2);
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+
+        engine.Start();
+
+        sw.Elapsed.Should().BeGreaterThanOrEqualTo(TimeSpan.FromMilliseconds(250));
+    }
+
+    [Fact]
+    public void Start_RestoresColourFromConsoleHandler()
+    {
+        var mockConsoleHandler = new Mock<IConsoleHandler>();
+        mockConsoleHandler.Setup(x => x.ForegroundColour).Returns(ConsoleColor.DarkCyan);
+
+        var mockPingDisplay = new Mock<IPingDisplay>();
+        var engine = CreateEngine(pingDisplay: mockPingDisplay, consoleHandler: mockConsoleHandler, pingCount: 1);
+
+        engine.Start();
+
+        mockPingDisplay.Verify(x => x.DisplaySummary(It.IsAny<string>(), ConsoleColor.DarkCyan, It.IsAny<IRollingStatistics>()), Times.Once);
+    }
+
     private static IPingEngine CreateEngine(
         Mock<IPingTools>? pingTools = null,
         Mock<IPingDisplay>? pingDisplay = null,
