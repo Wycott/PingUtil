@@ -31,5 +31,50 @@ public class PingConfig : IPingConfig
         {
             Data = "abcdefghijklmnopqrstuvwxyz012345";
         }
+
+        Validate();
+    }
+
+    private void Validate()
+    {
+        // Ping.Send rejects larger buffers
+        const int maxDataLength = 65500;
+
+        var problems = new List<string>();
+
+        if (string.IsNullOrWhiteSpace(RemoteServer))
+        {
+            problems.Add("RemoteServer must be set");
+        }
+
+        if (Timeout <= 0)
+        {
+            problems.Add("Timeout must be greater than zero");
+        }
+
+        if (SnoozeTime <= 0)
+        {
+            problems.Add("SnoozeTime must be greater than zero");
+        }
+
+        if (WorkingHours <= 0)
+        {
+            problems.Add("WorkingHours must be greater than zero");
+        }
+
+        if (AlertAfterThisManyFailedPings <= 0)
+        {
+            problems.Add("AlertAfterThisManyFailedPings must be greater than zero");
+        }
+
+        if (Data.Length > maxDataLength)
+        {
+            problems.Add($"Data must be at most {maxDataLength} characters");
+        }
+
+        if (problems.Count > 0)
+        {
+            throw new InvalidOperationException($"Invalid PingSettings in appsettings.json: {string.Join("; ", problems)}.");
+        }
     }
 }

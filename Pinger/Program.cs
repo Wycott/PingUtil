@@ -11,11 +11,26 @@ public static class Program
     [ExcludeFromCodeCoverage]
     public static void Main()
     {
-        using var serviceProvider = ConfigureServices();
+        ServiceProvider serviceProvider;
 
-        var engine = serviceProvider.GetRequiredService<IPingEngine>();
+        try
+        {
+            serviceProvider = ConfigureServices();
+        }
+        catch (InvalidOperationException ex)
+        {
+            Console.Error.WriteLine(ex.Message);
+            Environment.ExitCode = 1;
 
-        StartWork(engine);
+            return;
+        }
+
+        using (serviceProvider)
+        {
+            var engine = serviceProvider.GetRequiredService<IPingEngine>();
+
+            StartWork(engine);
+        }
     }
 
     public static ServiceProvider ConfigureServices()
