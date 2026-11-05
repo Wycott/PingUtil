@@ -86,4 +86,33 @@ public class PingConfigTest
         config.Timeout.Should().Be(10000);
         config.SnoozeTime.Should().Be(5000);
     }
+
+    [Theory]
+    [InlineData("SnoozeTime", "0")]
+    [InlineData("Timeout", "-1")]
+    [InlineData("WorkingHours", "0")]
+    [InlineData("AlertAfterThisManyFailedPings", "0")]
+    [InlineData("RemoteServer", " ")]
+    public void Constructor_WithInvalidSetting_ThrowsNamingTheSetting(string key, string value)
+    {
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { { $"PingSettings:{key}", value } })
+            .Build();
+
+        var act = () => new PingConfig(configuration);
+
+        act.Should().Throw<InvalidOperationException>().WithMessage($"*{key}*");
+    }
+
+    [Fact]
+    public void Constructor_WithOversizedData_Throws()
+    {
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { { "PingSettings:Data", new string('x', 65501) } })
+            .Build();
+
+        var act = () => new PingConfig(configuration);
+
+        act.Should().Throw<InvalidOperationException>().WithMessage("*Data*");
+    }
 }

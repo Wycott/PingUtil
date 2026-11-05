@@ -4,6 +4,6 @@ namespace Pinger.Domain;
 
 public class PingStats : IPingStats
 {
-    public bool Success { get; set; }
-    public long PingTime { get; set; }
+    public bool Success { get; init; }
+    public long PingTime { get; init; }
 }

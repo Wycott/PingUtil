@@ -43,7 +43,7 @@ public class PingEngine(
 
     private async Task StartAsync(CancellationToken cancellationToken)
     {
-        var usual = Console.ForegroundColor;
+        var usual = ConsoleHandler.ForegroundColour;
 
         var buffer = Encoding.ASCII.GetBytes(PingConfig.Data);
 
@@ -55,11 +55,26 @@ public class PingEngine(
 
         while (RollingStatistics.TotalPings < RollingStatistics.StopAfterThisManyPings && !cancellationToken.IsCancellationRequested)
         {
+            var pingStarted = sw.Elapsed;
+
             PerformPingUpdateAndDisplayStatistics(buffer, sw, usual);
+
+            if (RollingStatistics.TotalPings >= RollingStatistics.StopAfterThisManyPings)
+            {
+                break;
+            }
+
+            // Subtract the time the ping took so pings stay SnoozeTime apart and the countdown stays accurate
+            var delay = TimeSpan.FromMilliseconds(PingConfig.SnoozeTime) - (sw.Elapsed - pingStarted);
+
+            if (delay <= TimeSpan.Zero)
+            {
+                continue;
+            }
 
             try
             {
-                await Task.Delay(PingConfig.SnoozeTime, cancellationToken);
+                await Task.Delay(delay, cancellationToken);
             }
             catch (TaskCanceledException)
             {
