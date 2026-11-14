@@ -21,24 +21,17 @@ public class PingEngine(
 
     public void Start()
     {
-        using var cts = new CancellationTokenSource();
+        // Ctrl+C stops the loop so the summary still prints, instead of killing the process.
+        // No Dispose needed: this CTS has no timer or WaitHandle, and it lives for the whole run.
+        var cts = new CancellationTokenSource();
 
-        ConsoleCancelEventHandler cancelHandler = (_, e) =>
+        Console.CancelKeyPress += (_, e) =>
         {
             e.Cancel = true;
             cts.Cancel();
         };
 
-        Console.CancelKeyPress += cancelHandler;
-
-        try
-        {
-            StartAsync(cts.Token).GetAwaiter().GetResult();
-        }
-        finally
-        {
-            Console.CancelKeyPress -= cancelHandler;
-        }
+        StartAsync(cts.Token).GetAwaiter().GetResult();
     }
 
     private async Task StartAsync(CancellationToken cancellationToken)

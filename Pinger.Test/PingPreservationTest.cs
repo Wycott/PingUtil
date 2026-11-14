@@ -39,7 +39,7 @@ public class PingPreservationTest
         var recordedStats = RunSinglePingAndCapture(pingerIsActive: false, remoteServer: remoteServer);
 
         recordedStats.Should().NotBeNull("the inactive short-circuit still records a ping result");
-        recordedStats!.Success.Should().BeTrue("PingerIsActive == false short-circuits to a successful PingStats");
+        recordedStats.Success.Should().BeTrue("PingerIsActive == false short-circuits to a successful PingStats");
     }
 
     // Property: for any host that causes Send to throw, an active pinger records a
@@ -50,7 +50,7 @@ public class PingPreservationTest
         var recordedStats = RunSinglePingAndCapture(pingerIsActive: true, remoteServer: UnresolvableHost);
 
         recordedStats.Should().NotBeNull("an exception still produces a recorded ping result");
-        recordedStats!.Success.Should().BeFalse("an exception yields a failed PingStats (Success == false)");
+        recordedStats.Success.Should().BeFalse("an exception yields a failed PingStats (Success == false)");
     }
 
     // Drives PingEngine.Start() for exactly one ping and returns the IPingStats
